@@ -17,7 +17,7 @@ export const bikeRouter = createTRPCRouter({
         available: z.boolean().default(true),
       }),
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       return await ctx.db.bike.create({
         data: {
           name: input.name,
@@ -59,7 +59,7 @@ export const bikeRouter = createTRPCRouter({
             .partial(),
         ),
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       return await ctx.db.bike.update({
         where: { id: input.id },
         data: {
@@ -73,7 +73,7 @@ export const bikeRouter = createTRPCRouter({
     }),
   deleteBike: protectedManagerProcedure
     .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       return await ctx.db.bike.delete({ where: { id: input.id } });
     }),
 });

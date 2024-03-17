@@ -15,7 +15,7 @@ export const userRouter = createTRPCRouter({
         password: z.string().min(8),
       }),
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       return await ctx.db.user.create({
         data: {
           name: input.name,
@@ -37,7 +37,7 @@ export const userRouter = createTRPCRouter({
         password: z.string().min(8),
       }),
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       return await ctx.db.user.create({
         data: {
           name: input.name,
@@ -54,7 +54,7 @@ export const userRouter = createTRPCRouter({
         password: z.string().min(8),
       }),
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       return await ctx.db.user.create({
         data: {
           name: input.name,
@@ -78,7 +78,7 @@ export const userRouter = createTRPCRouter({
             .partial(),
         ),
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       return await ctx.db.user.update({
         where: { id: input.id },
         data: {
@@ -93,7 +93,7 @@ export const userRouter = createTRPCRouter({
         id: z.string(),
       }),
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       return await ctx.db.user.delete({ where: { id: input.id } });
     }),
 });
