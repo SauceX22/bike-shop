@@ -1,19 +1,79 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedManagerProcedure,
+  protectedProcedure,
+} from "@/server/api/trpc";
 
 export const bikeRouter = createTRPCRouter({
-  getBikeById: protectedProcedure
+  createBike: protectedManagerProcedure
     .input(
       z.object({
-        id: z.string(),
+        name: z.string(),
+        model: z.string(),
+        color: z.string(),
+        location: z.string(),
+        available: z.boolean().default(true),
       }),
     )
     .query(async ({ ctx, input }) => {
-      return await ctx.db.bike.findFirst({
-        where: {
-          id: input.id,
+      return await ctx.db.bike.create({
+        data: {
+          name: input.name,
+          model: input.model,
+          color: input.color,
+          location: input.location,
         },
       });
+    }),
+  getBike: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.bike.findUnique({ where: { id: input.id } });
+    }),
+  getBikeWithReservations: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.bike.findUnique({
+        where: { id: input.id },
+        relationLoadStrategy: "query",
+        include: { reservations: true },
+      });
+    }),
+  updateBike: protectedManagerProcedure
+    .input(
+      z
+        .object({
+          id: z.string(),
+        })
+        .and(
+          z
+            .object({
+              name: z.string(),
+              model: z.string(),
+              color: z.string(),
+              location: z.string(),
+              available: z.boolean(),
+            })
+            .partial(),
+        ),
+    )
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.bike.update({
+        where: { id: input.id },
+        data: {
+          name: input.name,
+          model: input.model,
+          color: input.color,
+          location: input.location,
+          available: input.available,
+        },
+      });
+    }),
+  deleteBike: protectedManagerProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.bike.delete({ where: { id: input.id } });
     }),
 });
