@@ -7,9 +7,7 @@ import {
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 import Credentials from "next-auth/providers/credentials";
-import GithubProvider from "next-auth/providers/github";
 
-import { env } from "@/env.mjs";
 import { db } from "@/server/db";
 
 /**
@@ -98,10 +96,10 @@ export const authOptions: NextAuthOptions = {
         return user;
       },
     }),
-    GithubProvider({
-      clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET,
-    }),
+    // GithubProvider({
+    //   clientId: env.GITHUB_CLIENT_ID,
+    //   clientSecret: env.GITHUB_CLIENT_SECRET,
+    // }),
     /**
      * ...add more providers here.
      *
