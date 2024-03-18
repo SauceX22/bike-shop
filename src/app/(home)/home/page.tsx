@@ -4,6 +4,7 @@ import { BikeItem } from "@/components/bike-item";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { Icons } from "@/components/icons";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
@@ -26,7 +27,9 @@ export default async function DashboardPage() {
   return (
     <DashboardShell>
       <DashboardHeader heading="Bikes" text="Create and manage bikes.">
-        <Link href="/home/bikes/create">Create bike</Link>
+        <Link href="/home/bikes/create" className={cn(buttonVariants())}>
+          Create bike
+        </Link>
       </DashboardHeader>
       <div>
         {bikes?.length ? (

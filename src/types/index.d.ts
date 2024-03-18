@@ -11,18 +11,10 @@ export type MainNavItem = NavItem;
 export type SidebarNavItem = {
   title: string;
   disabled?: boolean;
+  href: string;
   external?: boolean;
   icon?: keyof typeof Icons;
-} & (
-  | {
-      href: string;
-      items?: never;
-    }
-  | {
-      href?: string;
-      items: NavLink[];
-    }
-);
+};
 
 export type SiteConfig = {
   name: string;
