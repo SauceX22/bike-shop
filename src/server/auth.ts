@@ -8,7 +8,10 @@ import {
 import { type Adapter } from "next-auth/adapters";
 import Credentials from "next-auth/providers/credentials";
 
+import { env } from "@/env.mjs";
 import { db } from "@/server/db";
+import bcrypt from "bcrypt";
+import { decode, encode } from "next-auth/jwt";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -23,7 +26,7 @@ declare module "next-auth" {
 
   interface User {
     id: string;
-    name: string;
+    name: string | null;
     email: string;
     image: string | null;
 
@@ -38,35 +41,37 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        image: user.image,
-        role: user.role,
-      },
-    }),
-    async jwt({ token, user, account, profile, isNewUser }) {
-      const dbUser = token.name
-        ? await db.user.findFirst({
-            where: {
-              name: token.name,
-            },
-          })
-        : null;
-
-      if (!dbUser) {
-        if (user) {
-          token.id = user?.id;
-        }
-        return token;
+    session: async ({ session }) => {
+      if (!session.user.email) {
+        throw new Error("Session token is invalid");
       }
-      return token;
+      const user = await db.user.findUnique({
+        where: {
+          email: session.user.email,
+        },
+      });
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      return {
+        expires: session.expires,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+          role: user.role,
+        },
+      };
     },
   },
+  secret: env.NEXTAUTH_SECRET,
+  debug: env.NODE_ENV === "development",
+  session: {
+    strategy: "jwt",
+  },
+  jwt: { encode, decode },
   pages: {
     signIn: "/login",
   },
@@ -79,20 +84,33 @@ export const authOptions: NextAuthOptions = {
       type: "credentials",
       // The credentials is used to generate a suitable form on the sign in page.
       credentials: {
-        username: { label: "Username", type: "text" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        if (!credentials) {
+        if (!credentials?.email || !credentials.password) {
           return null;
         }
         // autorize user usnig prisma
-        const user = await db.user.findFirst({
+        const user = await db.user.findUnique({
           where: {
-            name: credentials.username,
-            password: credentials.password,
+            email: credentials.email,
           },
         });
+
+        if (!user) {
+          return null;
+        }
+
+        const passwordMatch = await bcrypt.compare(
+          credentials.password,
+          user.passwordHash ?? "",
+        );
+
+        if (!passwordMatch) {
+          return null;
+        }
+
         return user;
       },
     }),
