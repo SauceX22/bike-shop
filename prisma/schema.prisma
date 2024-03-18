@@ -1,29 +1,11 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["relationJoins"]
 }
 
 datasource db {
     provider = "postgresql"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
-}
-
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
 }
 
 // Necessary for Next auth
@@ -53,15 +35,23 @@ model Session {
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum UserRole {
+    MANAGER
+    USER
+}
+
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
+    id       String    @id @default(cuid())
+    name     String
+    password String
+    email    String    @unique
+    image    String?
+    accounts Account[]
+    sessions Session[]
+
+    // custom fields
+    role         UserRole      @default(USER)
+    reservations Reservation[]
 }
 
 model VerificationToken {
@@ -70,4 +60,35 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Bike {
+    id       String @id @default(cuid())
+    name     String
+    model    String
+    color    String
+    location String
+
+    averageRating Float   @default(0)
+    available     Boolean @default(true)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    reservations Reservation[]
+}
+
+model Reservation {
+    id        String   @id @default(cuid())
+    startDate DateTime
+    endDate   DateTime
+    rating    Int?
+
+    bike   Bike   @relation(fields: [bikeId], references: [id], onDelete: Cascade)
+    bikeId String
+
+    reservedBy   User   @relation(fields: [reservedById], references: [id], onDelete: Cascade)
+    reservedById String
+
+    @@unique([bikeId, startDate, endDate])
 }
