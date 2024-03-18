@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { type z } from "zod";
 
@@ -32,13 +32,11 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
     resolver: zodResolver(userAuthLoginSchema),
   });
   const {
-    register,
     handleSubmit,
     formState: { errors },
   } = loginForm;
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   async function onSubmit(data: FormData) {
@@ -48,7 +46,6 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
       email: data.email,
       password: data.password,
       redirect: false,
-      callbackUrl: "/home",
     });
 
     setIsLoading(false);
