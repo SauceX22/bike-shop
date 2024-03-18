@@ -45,8 +45,10 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
     setIsLoading(true);
 
     const signInResult = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
       redirect: false,
-      callbackUrl: searchParams?.get("from") ?? "/home",
+      callbackUrl: "/home",
     });
 
     setIsLoading(false);
@@ -66,7 +68,7 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
     });
 
     // Redirect to the page the user came from
-    return router.push(searchParams.get("from") ?? "/home");
+    return router.push("/home");
   }
 
   return (

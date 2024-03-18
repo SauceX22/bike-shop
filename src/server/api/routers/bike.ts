@@ -27,6 +27,11 @@ export const bikeRouter = createTRPCRouter({
         },
       });
     }),
+  getAvailableBikes: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.bike.findMany({
+      where: { available: true },
+    });
+  }),
   getBike: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
