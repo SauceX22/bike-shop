@@ -1,4 +1,3 @@
-import { BikeItem } from "@/components/bike-item";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { Icons } from "@/components/icons";
@@ -9,24 +8,25 @@ import { type Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Home",
+  title: "Reservations",
+  description: "Create and manage your reservations.",
 };
 
-export default async function HomePage() {
-  const bikes = await api.bike.getAvailableBikes.query();
+export default async function ReservationsPage() {
+  const reservations = await api.reservation.getUserReservations.query();
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Home" text="Create and manage bikes.">
+      <DashboardHeader heading="Reservations" text="Create and manage bikes.">
         <Link href="/bikes/create" className={cn(buttonVariants())}>
           Create bike
         </Link>
       </DashboardHeader>
       <div>
-        {bikes?.length ? (
+        {reservations?.length ? (
           <div className="grid gap-4 grid-cols-3">
-            {bikes.map((bike) => (
-              <BikeItem key={bike.id} bike={bike} />
+            {reservations.map((bike) => (
+              <p key={bike.id}>bike</p>
             ))}
           </div>
         ) : (
@@ -50,6 +50,7 @@ export default async function HomePage() {
             >
               You don&apos;t have any bikes yet. Start creating content.
             </p>
+            {/* <BikeCreateButton variant="outline" /> */}
           </div>
         )}
       </div>

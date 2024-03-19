@@ -56,7 +56,7 @@ export function UserRegisterForm({
         });
 
         // Redirect to the page the user came from
-        router.push("/login");
+        router.push("/auth/login");
       },
     });
 
@@ -149,7 +149,7 @@ export function UserRegisterForm({
             Already have an account?{" "}
             <Link
               className="hover:text-brand underline underline-offset-4"
-              href="/login"
+              href="/auth/login"
               prefetch
             >
               Login

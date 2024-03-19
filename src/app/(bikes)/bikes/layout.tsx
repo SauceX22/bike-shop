@@ -1,10 +1,11 @@
+import { redirect } from "next/navigation";
+
 import { DashboardNav } from "@/components/dashboard/nav";
 import { MainNav } from "@/components/main-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { UserAccountNav } from "@/components/user-account-nav";
 import { dashboardConfig } from "@/config/dashboard";
 import { getServerAuthSession } from "@/server/auth";
-import { redirect } from "next/navigation";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;

@@ -1,12 +1,12 @@
 import { type Metadata } from "next";
 import Link from "next/link";
 
+import { UserLoginForm } from "@/components/auth/user-login-form";
 import { Icons } from "@/components/icons";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getServerAuthSession } from "@/server/auth";
 import { redirect } from "next/navigation";
-import { UserLoginForm } from "../_components/user-login-form";
 
 export const metadata: Metadata = {
   title: "Login",

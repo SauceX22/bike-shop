@@ -20,12 +20,12 @@ export const dashboardConfig: DashboardConfig = {
     },
     {
       title: "Reservations",
-      href: "/home/reservations",
+      href: "/reservations",
       icon: "reservation",
     },
     {
       title: "Settings",
-      href: "/home/settings",
+      href: "/settings",
       icon: "settings",
     },
   ],

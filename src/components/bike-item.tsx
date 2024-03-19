@@ -1,9 +1,18 @@
 import { type Bike } from "@prisma/client";
-import Link from "next/link";
 
-import { BikeOperations } from "@/components/bike-operations";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { MapPin } from "lucide-react";
+import Link from "next/link";
 
 interface BikeItemProps {
   bike: Bike;
@@ -11,22 +20,30 @@ interface BikeItemProps {
 
 export function BikeItem({ bike }: BikeItemProps) {
   return (
-    <div className="flex items-center justify-between p-4">
-      <div className="grid gap-1">
-        <Link
-          href={`/bike/${bike.id}`}
-          className="font-semibold hover:underline"
-        >
-          {bike.name}
-        </Link>
-        <div>
-          <p className="text-sm text-muted-foreground">
-            {format(bike.createdAt, "MMMM dd, yyyy")}
-          </p>
+    <Card className="h-64 flex flex-col">
+      <CardHeader>
+        <CardTitle>{bike.name}</CardTitle>
+        <CardDescription>{bike.model}</CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-row items-center justify-between mb-auto">
+        <div className="text-secondary-foreground">
+          <MapPin className="w-6 h-6" />
+          {bike.location}
         </div>
-      </div>
-      <BikeOperations bike={{ id: bike.id, name: bike.name }} />
-    </div>
+        <div
+          className="rounded-full h-8 w-8"
+          style={{ backgroundColor: bike.color }}
+        ></div>
+      </CardContent>
+      <CardFooter className="mt-auto">
+        <Link
+          href={`/bikes/${bike.id}`}
+          className={cn(buttonVariants(), "w-full")}
+        >
+          Reserve
+        </Link>
+      </CardFooter>
+    </Card>
   );
 }
 

@@ -73,7 +73,7 @@ export const authOptions: NextAuthOptions = {
   },
   jwt: { encode, decode },
   pages: {
-    signIn: "/login",
+    signIn: "/auth/login",
   },
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
