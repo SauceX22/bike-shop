@@ -52,6 +52,7 @@ model User {
     // custom fields
     role         UserRole      @default(USER)
     reservations Reservation[]
+    bikes        Bike[]
 }
 
 model Bike {
@@ -66,6 +67,9 @@ model Bike {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Cascade)
+    createdById String
 
     reservations Reservation[]
 }
