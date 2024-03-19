@@ -13,15 +13,11 @@ export const metadata: Metadata = {
   description: "Login to your account",
 };
 
-export default async function LoginPage({
-  searchParams,
-}: {
-  searchParams: URLSearchParams;
-}) {
+export default async function LoginPage() {
   const session = await getServerAuthSession();
 
   if (session?.user) {
-    redirect(searchParams.get("from") ?? "/home");
+    redirect("/home");
   }
 
   return (

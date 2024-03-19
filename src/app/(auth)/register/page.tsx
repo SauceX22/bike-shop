@@ -12,11 +12,7 @@ export const metadata = {
   description: "Create an account to get started.",
 };
 
-export default async function RegisterPage({
-  searchParams,
-}: {
-  searchParams: URLSearchParams;
-}) {
+export default async function RegisterPage() {
   const session = await getServerAuthSession();
 
   if (session?.user) {
