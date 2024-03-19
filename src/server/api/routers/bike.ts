@@ -4,7 +4,10 @@ import {
   createTRPCRouter,
   protectedManagerProcedure,
   protectedProcedure,
+  protectedUserProcedure,
 } from "@/server/api/trpc";
+import { TRPCError } from "@trpc/server";
+import { areIntervalsOverlapping } from "date-fns";
 
 export const bikeRouter = createTRPCRouter({
   createBike: protectedManagerProcedure
@@ -24,6 +27,7 @@ export const bikeRouter = createTRPCRouter({
           model: input.model,
           color: input.color,
           location: input.location,
+          createdBy: { connect: { id: ctx.session.user.id } },
         },
       });
     }),
@@ -44,6 +48,62 @@ export const bikeRouter = createTRPCRouter({
         where: { id: input.id },
         relationLoadStrategy: "query",
         include: { reservations: true },
+      });
+    }),
+  reserveBike: protectedUserProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        startDate: z.date(),
+        endDate: z.date(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // check if the bike is available and not overlapping with other reservations
+      const bike = await ctx.db.bike.findUnique({
+        where: { id: input.id },
+        include: { reservations: true },
+      });
+
+      if (!bike) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Bike not found",
+        });
+      }
+
+      if (!bike.available) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Bike is not available at the moment, try again later.",
+        });
+      }
+
+      for (const reservation of bike.reservations) {
+        if (
+          areIntervalsOverlapping(
+            {
+              start: new Date(reservation.startDate),
+              end: new Date(reservation.endDate),
+            },
+            { start: input.startDate, end: input.endDate },
+          )
+        ) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message:
+              "Bike is already reserved for all/part of the selected dates.",
+          });
+        }
+      }
+
+      return await ctx.db.reservation.create({
+        data: {
+          bike: { connect: { id: input.id } },
+          reservedBy: { connect: { id: ctx.session.user.id } },
+          startDate: new Date(input.startDate),
+          endDate: new Date(input.endDate),
+        },
       });
     }),
   updateBike: protectedManagerProcedure

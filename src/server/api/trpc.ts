@@ -113,3 +113,17 @@ export const protectedManagerProcedure = t.procedure.use(({ ctx, next }) => {
     },
   });
 });
+
+/** Reusable middleware that enforces users are users before running the procedure. */
+export const protectedUserProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.session?.user || ctx.session.user.role !== "USER") {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
