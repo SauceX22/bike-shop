@@ -15,6 +15,10 @@ const config = {
       },
     ];
   },
+  images: {
+    domains: ["avatar.vercel.sh"],
+    dangerouslyAllowSVG: true,
+  },
 };
 
 export default config;
