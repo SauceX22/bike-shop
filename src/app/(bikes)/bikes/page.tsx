@@ -9,17 +9,17 @@ import { type Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Home",
+  title: "Bikes",
 };
 
-export default async function HomePage() {
+export default async function BikesPage() {
   const bikes = await api.bike.getAvailableBikes.query();
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Home" text="Bikes available for rent.">
-        <Link href="/reservations" className={cn(buttonVariants())}>
-          View Your Reservations
+      <DashboardHeader heading="Bikes" text="Create and manage shop bikes.">
+        <Link href="/bikes/create" className={cn(buttonVariants())}>
+          Create bike
         </Link>
       </DashboardHeader>
       <div>
@@ -41,15 +41,14 @@ export default async function HomePage() {
               </div>
             </div>
             <h2 className={cn("mt-6 text-xl font-semibold")}>
-              No bikes available
+              No bikes created
             </h2>
             <p
               className={cn(
                 "mb-8 mt-2 text-center text-sm font-normal leading-6 text-muted-foreground",
               )}
             >
-              There are no bikes available for rent at the moment. Please check
-              back later.
+              You don&apos;t have any bikes yet. Start creating content.
             </p>
           </div>
         )}

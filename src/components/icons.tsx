@@ -10,6 +10,7 @@ import {
   File,
   FileText,
   HelpCircle,
+  Home,
   Image,
   Laptop,
   Loader2,
@@ -71,6 +72,7 @@ export const Icons = {
   ),
   twitter: Twitter,
   check: Check,
+  home: Home,
   bike: ({ ...props }: LucideProps) => (
     <svg
       version="1.1"

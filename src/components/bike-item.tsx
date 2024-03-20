@@ -25,15 +25,15 @@ export function BikeItem({ bike }: BikeItemProps) {
         <CardTitle>{bike.name}</CardTitle>
         <CardDescription>{bike.model}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-row items-center justify-between mb-auto">
-        <div className="text-secondary-foreground">
+      <CardContent className="flex flex-row items-center justify-between mb-auto px-6 py-2">
+        <span className="text-secondary-foreground flex-shrink-0 flex gap-2 w-fit">
           <MapPin className="w-6 h-6" />
           {bike.location}
-        </div>
-        <div
+        </span>
+        <span
           className="rounded-full h-8 w-8"
           style={{ backgroundColor: bike.color }}
-        ></div>
+        ></span>
       </CardContent>
       <CardFooter className="mt-auto">
         <Link
