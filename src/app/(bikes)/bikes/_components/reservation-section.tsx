@@ -20,6 +20,7 @@ import {
 import { api } from "@/trpc/client";
 import { type Bike } from "@prisma/client";
 import { areIntervalsOverlapping, format, isSameYear } from "date-fns";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { type DateRange } from "react-day-picker";
 import { toast } from "sonner";
@@ -35,6 +36,7 @@ const ReservationSection = ({ bike, reservedDates }: Props) => {
     to: new Date(),
   });
   const [isOverlapping, setIsOverlapping] = useState(false);
+  const router = useRouter();
 
   const differentYear = !isSameYear(
     date?.from ?? new Date(),
@@ -51,17 +53,21 @@ const ReservationSection = ({ bike, reservedDates }: Props) => {
       toast.success("Bike reserved successfully!", {
         description: "You can view your reservations in your dashboard.",
       });
+
+      router.push("/reservations");
     },
   });
 
   function setDateNoOverlap(dateRange: DateRange | undefined) {
-    if (!dateRange?.from || !dateRange?.to) return;
+    if (!dateRange) return;
     setIsOverlapping(false);
     // check if the selected date range is overlapping with any of the reserved dates
     for (const reservation of reservedDates) {
       if (
         reservation.from &&
         reservation.to &&
+        dateRange.from &&
+        dateRange.to &&
         areIntervalsOverlapping(
           {
             start: dateRange.from,
@@ -98,6 +104,20 @@ const ReservationSection = ({ bike, reservedDates }: Props) => {
           onSelect={setDateNoOverlap}
           disabled={reservedDates}
           className="rounded-md border"
+          footer={
+            <Button
+              variant="outline"
+              className="text-muted-foreground text-sm text-center w-full mt-2"
+              onClick={() =>
+                setDate({
+                  from: undefined,
+                  to: undefined,
+                })
+              }
+            >
+              clear
+            </Button>
+          }
         />
       </div>
       <Card className="w-full flex flex-col">
