@@ -133,7 +133,7 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
             No account?{" "}
             <Link
               className="hover:text-brand underline underline-offset-4"
-              href="/register"
+              href="/auth/register"
               prefetch
             >
               Register
