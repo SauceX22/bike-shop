@@ -46,7 +46,7 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
   });
 
   const { mutateAsync: updateUser, isLoading: isSaving } =
-    api.user.updateUser.useMutation({
+    api.user.updateUsername.useMutation({
       onError(error, variables, context) {
         toast.error("Something went wrong.", {
           description: "Your name was not updated. Please try again.",
@@ -59,7 +59,7 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
     });
 
   const onSubmit = async (data: FormData) => {
-    await updateUser({ id: user.id, name: data.name });
+    await updateUser({ name: data.name });
   };
 
   return (

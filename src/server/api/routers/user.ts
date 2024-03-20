@@ -4,6 +4,7 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   protectedManagerProcedure,
+  protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 import { UserRole } from "@prisma/client";
@@ -98,6 +99,20 @@ export const userRouter = createTRPCRouter({
         where: { id: input.id },
         data: {
           enabled: input.enabled,
+        },
+      });
+    }),
+  updateUsername: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.user.update({
+        where: { id: ctx.session.user.id },
+        data: {
+          name: input.name,
         },
       });
     }),
