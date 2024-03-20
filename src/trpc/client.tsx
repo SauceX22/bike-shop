@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
+import { devtoolsLink } from "trpc-client-devtools-link";
 
 import { type AppRouter } from "@/server/api/root";
 import { getUrl, transformer } from "./shared";
@@ -29,6 +30,11 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
     api.createClient({
       transformer,
       links: [
+        devtoolsLink({
+          // `enabled` is true by default
+          // If you want to use the devtools extension just for development, do the following
+          enabled: process.env.NODE_ENV === "development",
+        }),
         loggerLink({
           enabled: (op) =>
             process.env.NODE_ENV === "development" ||
