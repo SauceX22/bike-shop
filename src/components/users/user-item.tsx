@@ -1,8 +1,15 @@
 import { type User } from "@prisma/client";
 
-import { Card, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserOperations } from "@/components/users/user-operations";
+import { cn } from "@/lib/utils";
+import { UserAvatar } from "../user-avatar";
 
 interface UserItemProps {
   user: User;
@@ -10,10 +17,26 @@ interface UserItemProps {
 
 export function UserItem({ user }: UserItemProps) {
   return (
-    <Card className="flex items-center justify-between p-4">
-      <CardHeader className="grid gap-1">{user.name}</CardHeader>
-      <CardFooter>
-        <UserOperations user={user} />
+    <Card className="flex items-center justify-between p-2">
+      <CardHeader className="flex flex-row items-center justify-start text-xl font-bold gap-4 flex-shrink-0">
+        <UserAvatar user={user} />
+        {user.name}
+      </CardHeader>
+      <CardContent className="flex flex-row h-full w-full justify-between gap-8 items-center p-4">
+        <span className="text-sm font-normal text-muted-foreground text-left">
+          {user.email}
+        </span>
+        <span
+          className={cn(
+            "text-sm font-normal",
+            user.enabled ? "text-green-500" : "text-red-500",
+          )}
+        >
+          {user.enabled ? "Enabled" : "Disabled"}
+        </span>
+      </CardContent>
+      <CardFooter className="p-4">
+        <UserOperations user={user} className="my-auto" />
       </CardFooter>
     </Card>
   );

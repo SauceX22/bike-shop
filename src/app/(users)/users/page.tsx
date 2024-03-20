@@ -2,6 +2,7 @@ import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { Icons } from "@/components/icons";
 import AddUserButton from "@/components/users/add-user-button";
+import { UserItem } from "@/components/users/user-item";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/server";
 import { type Metadata } from "next";
@@ -21,9 +22,9 @@ export default async function UsersPage() {
       </DashboardHeader>
       <div>
         {users?.length ? (
-          <div className="grid gap-4 grid-cols-3">
+          <div className="grid grid-cols-1 gap-2">
             {users.map((user) => (
-              <p key={user.id}>{user.name}</p>
+              <UserItem key={user.id} user={user} />
             ))}
           </div>
         ) : (

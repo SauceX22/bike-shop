@@ -81,7 +81,7 @@ export default function AddUserButton() {
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <DialogTrigger asChild>
-        <Button>add User</Button>
+        <Button>Add User</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
