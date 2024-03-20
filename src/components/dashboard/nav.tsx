@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { type SidebarNavItem } from "@/types";
+import { useSession } from "next-auth/react";
 
 interface DashboardNavProps {
   items: SidebarNavItem[];
@@ -13,6 +14,7 @@ interface DashboardNavProps {
 
 export function DashboardNav({ items }: DashboardNavProps) {
   const path = usePathname();
+  const { data: session } = useSession();
 
   if (!items?.length) {
     return null;
@@ -21,6 +23,10 @@ export function DashboardNav({ items }: DashboardNavProps) {
   return (
     <nav className="grid items-start gap-1">
       {items.map((item, index) => {
+        if (item.managerOnly && session?.user.role !== "MANAGER") {
+          return null;
+        }
+
         const Icon = Icons[item.icon ?? "arrowRight"];
         return (
           item.href && (
