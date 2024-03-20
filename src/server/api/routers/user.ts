@@ -6,6 +6,7 @@ import {
   protectedManagerProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
+import { UserRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 export const userRouter = createTRPCRouter({
@@ -44,6 +45,8 @@ export const userRouter = createTRPCRouter({
       }
 
       const hashedPassword = await bcrypt.hash(input.password, 10);
+      console.log("hashedPassword", hashedPassword);
+
       return await ctx.db.user.create({
         data: {
           name: input.name,
@@ -52,6 +55,15 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+  getAll: protectedManagerProcedure.query(async ({ ctx }) => {
+    return await ctx.db.user.findMany({
+      where: {
+        id: {
+          not: ctx.session.user.id,
+        },
+      },
+    });
+  }),
   getUser: protectedManagerProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -62,28 +74,15 @@ export const userRouter = createTRPCRouter({
       z.object({
         name: z.string(),
         email: z.string().email(),
-        password: z.string().min(8),
+        role: z.nativeEnum(UserRole),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.user.create({
         data: {
+          name: input.name,
           email: input.email,
-        },
-      });
-    }),
-  addManager: protectedManagerProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        email: z.string().email(),
-        password: z.string().min(8),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.db.user.create({
-        data: {
-          email: input.email,
+          role: input.role,
         },
       });
     }),
