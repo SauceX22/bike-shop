@@ -86,8 +86,8 @@ export const Icons = {
     >
       <g
         id="SVGRepo_tracerCarrier"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       ></g>
       <path
         fill="currentColor"
