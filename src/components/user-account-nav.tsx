@@ -15,7 +15,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { dashboardConfig } from "@/config/dashboard";
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
-  user: Pick<User, "name" | "image" | "email">;
+  user: User;
 }
 
 export function UserAccountNav({ user }: UserAccountNavProps) {
@@ -39,11 +39,17 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
           </div>
         </div>
         <DropdownMenuSeparator />
-        {dashboardConfig.sidebarNav.map((item, idx) => (
-          <DropdownMenuItem key={idx} asChild>
-            <Link href={item.href}>{item.title}</Link>
-          </DropdownMenuItem>
-        ))}
+        {dashboardConfig.sidebarNav.map((item, idx) => {
+          if (item.managerOnly && user.role !== "MANAGER") {
+            return null;
+          }
+
+          return (
+            <DropdownMenuItem key={idx} asChild>
+              <Link href={item.href}>{item.title}</Link>
+            </DropdownMenuItem>
+          );
+        })}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="cursor-pointer"
