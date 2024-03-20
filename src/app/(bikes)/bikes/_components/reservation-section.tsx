@@ -20,7 +20,7 @@ import {
 import { api } from "@/trpc/client";
 import { type Bike } from "@prisma/client";
 import { areIntervalsOverlapping, format, isSameYear } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type DateRange } from "react-day-picker";
 import { toast } from "sonner";
 
@@ -54,42 +54,48 @@ const ReservationSection = ({ bike, reservedDates }: Props) => {
     },
   });
 
+  function setDateNoOverlap(dateRange: DateRange | undefined) {
+    if (!dateRange?.from || !dateRange?.to) return;
+    setIsOverlapping(false);
+    // check if the selected date range is overlapping with any of the reserved dates
+    for (const reservation of reservedDates) {
+      if (
+        reservation.from &&
+        reservation.to &&
+        areIntervalsOverlapping(
+          {
+            start: dateRange.from,
+            end: dateRange.to,
+          },
+          {
+            start: reservation.from,
+            end: reservation.to,
+          },
+        )
+      ) {
+        setIsOverlapping(true);
+        toast.error(
+          "Bike is already reserved for all/part of the selected dates.",
+          {
+            duration: 2000,
+          },
+        );
+      }
+    }
+    setDate(dateRange);
+  }
+
+  useEffect(() => {
+    setDateNoOverlap(date);
+  }, []);
+
   return (
     <div className="flex gap-2 w-full">
       <div className="w-fit">
         <Calendar
           mode="range"
           selected={date}
-          onSelect={(dateRange) => {
-            if (!dateRange?.from || !dateRange?.to) return;
-            setIsOverlapping(false);
-            // check if the selected date range is overlapping with any of the reserved dates
-            for (const reservation of reservedDates) {
-              if (
-                reservation.from &&
-                reservation.to &&
-                areIntervalsOverlapping(
-                  {
-                    start: dateRange.from,
-                    end: dateRange.to,
-                  },
-                  {
-                    start: reservation.from,
-                    end: reservation.to,
-                  },
-                )
-              ) {
-                setIsOverlapping(true);
-                toast.error(
-                  "Bike is already reserved for all/part of the selected dates.",
-                  {
-                    duration: 2000,
-                  },
-                );
-              }
-            }
-            setDate(dateRange);
-          }}
+          onSelect={setDateNoOverlap}
           disabled={reservedDates}
           className="rounded-md border"
         />
