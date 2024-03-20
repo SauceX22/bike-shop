@@ -13,6 +13,7 @@ export type SidebarNavItem = {
   disabled?: boolean;
   href: string;
   external?: boolean;
+  managerOnly?: boolean;
   icon?: keyof typeof Icons;
 };
 

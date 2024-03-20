@@ -24,6 +24,12 @@ export const dashboardConfig: DashboardConfig = {
       icon: "reservation",
     },
     {
+      title: "Users",
+      href: "/users",
+      icon: "user",
+      managerOnly: true,
+    },
+    {
       title: "Settings",
       href: "/settings",
       icon: "settings",
