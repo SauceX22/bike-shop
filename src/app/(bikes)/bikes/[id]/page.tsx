@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 
 import ReservationSection from "@/app/(bikes)/bikes/_components/reservation-section";
 import type { Metadata } from "next";
+import { unstable_noStore } from "next/cache";
 
 type Props = {
   params: { id: string };
@@ -29,6 +30,7 @@ export default async function BikeDetailsPage({
 }: {
   params: { id: string };
 }) {
+  unstable_noStore();
   const session = await getServerAuthSession();
 
   const bike = await api.bike.getBikeWithReservations.query({ id: bikeId });

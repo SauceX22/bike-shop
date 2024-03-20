@@ -57,6 +57,11 @@ const ReservationSection = ({ bike, reservedDates }: Props) => {
 
       await apiUtils.reservation.invalidate();
       await apiUtils.bike.invalidate();
+      router.refresh();
+      setDate({
+        from: undefined,
+        to: undefined,
+      });
       router.push("/reservations");
     },
   });
