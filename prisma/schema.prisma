@@ -49,7 +49,9 @@ model User {
     accounts     Account[]
     sessions     Session[]
 
-    // custom fields
+    joinedAt DateTime @default(now())
+    enabled  Boolean  @default(true)
+
     role         UserRole      @default(USER)
     reservations Reservation[]
     bikes        Bike[]
