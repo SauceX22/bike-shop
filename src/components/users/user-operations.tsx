@@ -42,7 +42,6 @@ export function UserOperations({ user, className }: UserOperationsProps) {
   const { mutateAsync: setUserEnabledStatus } =
     api.user.setUserEnabledStatus.useMutation({
       onError(err) {
-        console.log(err);
         toast.error("Something went wrong.", {
           description: err.message,
         });
@@ -59,7 +58,6 @@ export function UserOperations({ user, className }: UserOperationsProps) {
 
   const { mutateAsync: deleteUser } = api.user.deleteUser.useMutation({
     onError(err) {
-      console.log(err);
       toast.error("Something went wrong.", {
         description: err.message,
       });

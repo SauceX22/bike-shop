@@ -54,7 +54,6 @@ export default function AddUserButton() {
 
   const { mutateAsync: addUser, isLoading } = api.user.addUser.useMutation({
     onError(err) {
-      console.log(err);
       toast.error("Something went wrong.", {
         description: err.message,
       });

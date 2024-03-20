@@ -1,11 +1,10 @@
 import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { Icons } from "@/components/icons";
-import { buttonVariants } from "@/components/ui/button";
+import { ReservationItem } from "@/components/reservation-item";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/server";
 import { type Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Reservations",
@@ -13,20 +12,21 @@ export const metadata: Metadata = {
 };
 
 export default async function ReservationsPage() {
-  const reservations = await api.reservation.getUserReservations.query();
+  const reservations =
+    await api.reservation.getUserReservationsWithBikes.query();
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Reservations" text="Create and manage bikes.">
-        <Link href="/bikes/create" className={cn(buttonVariants())}>
-          Create bike
-        </Link>
-      </DashboardHeader>
+      <DashboardHeader heading="Reservations" text="Manage your reservations" />
       <div>
         {reservations?.length ? (
           <div className="grid gap-4 grid-cols-3">
-            {reservations.map((bike) => (
-              <p key={bike.id}>bike</p>
+            {reservations.map((reservation) => (
+              <ReservationItem
+                key={reservation.id}
+                reservation={reservation}
+                bike={reservation.bike}
+              />
             ))}
           </div>
         ) : (

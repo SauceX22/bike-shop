@@ -33,7 +33,13 @@ export const reservationRouter = createTRPCRouter({
       where: { reservedById: ctx.session.user.id },
     });
   }),
-  deleteReservation: protectedProcedure
+  getUserReservationsWithBikes: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.reservation.findMany({
+      where: { reservedById: ctx.session.user.id },
+      include: { bike: true },
+    });
+  }),
+  cancelReservation: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.reservation.delete({ where: { id: input.id } });

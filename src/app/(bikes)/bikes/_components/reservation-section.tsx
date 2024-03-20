@@ -37,6 +37,7 @@ const ReservationSection = ({ bike, reservedDates }: Props) => {
   });
   const [isOverlapping, setIsOverlapping] = useState(false);
   const router = useRouter();
+  const apiUtils = api.useUtils();
 
   const differentYear = !isSameYear(
     date?.from ?? new Date(),
@@ -49,11 +50,13 @@ const ReservationSection = ({ bike, reservedDates }: Props) => {
         description: error.message,
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Bike reserved successfully!", {
         description: "You can view your reservations in your dashboard.",
       });
 
+      await apiUtils.reservation.invalidate();
+      await apiUtils.bike.invalidate();
       router.push("/reservations");
     },
   });
