@@ -101,7 +101,7 @@ export function UserOperations({ user, className }: UserOperationsProps) {
             onClick={() => {
               setShowDeleteDialog(true);
             }}
-            className="bg-red-500/20 ring-red-600/50 ring-1 focus:bg-red-500/50 focus:ring-red-800/60"
+            variant="destructive"
           >
             Delete
             <DropdownMenuShortcut>Delete</DropdownMenuShortcut>
