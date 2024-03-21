@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { z } from "zod";
 
+import { userAuthRegisterSchema } from "@/lib/validations/auth";
 import {
   createTRPCRouter,
   protectedManagerProcedure,
@@ -12,13 +13,7 @@ import { TRPCError } from "@trpc/server";
 
 export const userRouter = createTRPCRouter({
   register: publicProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        email: z.string().email(),
-        password: z.string().min(8),
-      }),
-    )
+    .input(userAuthRegisterSchema)
     .mutation(async ({ ctx, input }) => {
       const exists = await ctx.db.user.findUnique({
         where: { email: input.email },
@@ -45,8 +40,16 @@ export const userRouter = createTRPCRouter({
         });
       }
 
-      const hashedPassword = await bcrypt.hash(input.password, 10);
-      console.log("hashedPassword", hashedPassword);
+      let hashedPassword;
+      try {
+        hashedPassword = await bcrypt.hash(input.password, 10);
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to hash password",
+          cause: error,
+        });
+      }
 
       return await ctx.db.user.create({
         data: {

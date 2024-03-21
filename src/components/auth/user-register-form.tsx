@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
@@ -35,12 +35,10 @@ export function UserRegisterForm({
     resolver: zodResolver(userAuthRegisterSchema),
   });
   const {
-    register,
     handleSubmit,
     formState: { errors },
   } = registerForm;
 
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const { mutateAsync: registerUser, isLoading } =
