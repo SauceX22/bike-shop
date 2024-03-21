@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { addNewBikeSchema } from "@/lib/validations/bike";
 import {
   createTRPCRouter,
   protectedManagerProcedure,
@@ -11,15 +12,7 @@ import { areIntervalsOverlapping } from "date-fns";
 
 export const bikeRouter = createTRPCRouter({
   createBike: protectedManagerProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        model: z.string(),
-        color: z.string(),
-        location: z.string(),
-        available: z.boolean().default(true),
-      }),
-    )
+    .input(addNewBikeSchema)
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.bike.create({
         data: {
