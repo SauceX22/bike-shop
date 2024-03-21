@@ -37,20 +37,20 @@ export default async function ReservationsPage() {
           >
             <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-                <Icons.bike className={cn("h-10 w-10")} />
+                <Icons.reservation className={cn("h-10 w-10")} />
               </div>
             </div>
             <h2 className={cn("mt-6 text-xl font-semibold")}>
-              No bikes created
+              You don&apos;t have any reservations
             </h2>
             <p
               className={cn(
                 "mb-8 mt-2 text-center text-sm font-normal leading-6 text-muted-foreground",
               )}
             >
-              You don&apos;t have any bikes yet. Start creating content.
+              You don&apos;t have any reservations yet. Rent a bike to get
+              started.
             </p>
-            {/* <BikeCreateButton variant="outline" /> */}
           </div>
         )}
       </div>
