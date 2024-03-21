@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -19,12 +19,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
-import { addNewBikeSchema } from "@/lib/validations/bike";
+import { cn } from "@/lib/utils";
+import { addNewBikeSchema } from "@/lib/validations/general";
 import { api } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { SketchPicker } from "react-color";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { type z } from "zod";
@@ -53,6 +60,8 @@ export default function AddBikeButton() {
     },
     async onSuccess(data, variables, context) {
       setShowDialog(false);
+      addBikeForm.reset();
+
       toast.success("Bike added successfully!", {
         description: "The bike has been successfully added to the shop.",
       });
@@ -67,9 +76,17 @@ export default function AddBikeButton() {
   }
 
   return (
-    <Dialog open={showDialog} onOpenChange={setShowDialog}>
+    <Dialog
+      open={showDialog}
+      onOpenChange={(isOpen) => {
+        setShowDialog(isOpen);
+        if (!isOpen) {
+          addBikeForm.reset();
+        }
+      }}
+    >
       <DialogTrigger asChild>
-        <Button>Add Bike</Button>
+        <Button onClick={() => setShowDialog(true)}>Add Bike</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
@@ -122,27 +139,7 @@ export default function AddBikeButton() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={addBikeForm.control}
-              name="color"
-              render={({ field }) => (
-                <FormItem className="mt-2">
-                  <FormLabel htmlFor="color">Color</FormLabel>
-                  <FormControl id="color">
-                    <Input
-                      type="text"
-                      id="color"
-                      autoCapitalize="words"
-                      autoComplete="color"
-                      autoCorrect="off"
-                      disabled={isLoading}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage>{errors.color?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
+
             <FormField
               control={addBikeForm.control}
               name="location"
@@ -166,6 +163,35 @@ export default function AddBikeButton() {
             />
             <FormField
               control={addBikeForm.control}
+              name="color"
+              render={({ field }) => (
+                <FormItem className="mt-2 flex flex-col">
+                  <FormLabel htmlFor="color">Color</FormLabel>
+                  <FormControl id="color">
+                    <Popover>
+                      <PopoverTrigger
+                        className={cn(buttonVariants(), "w-full")}
+                        style={{ backgroundColor: field.value }}
+                      >
+                        Open Color Picker
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <SketchPicker
+                          key="color-picker"
+                          color={field.value}
+                          onChangeComplete={(color) =>
+                            field.onChange(color.hex)
+                          }
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
+                  <FormMessage>{errors.color?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={addBikeForm.control}
               name="available"
               render={({ field }) => (
                 <FormItem className="mt-2">
@@ -181,7 +207,7 @@ export default function AddBikeButton() {
                 </FormItem>
               )}
             />
-            <DialogFooter>
+            <DialogFooter className="mt-4">
               <Button type="submit">Add</Button>
             </DialogFooter>
           </form>
