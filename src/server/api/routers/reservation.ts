@@ -51,10 +51,12 @@ export const reservationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.reservation.update({
-        where: { id: input.id },
-        data: { rating: input.rating },
-      });
+      return (
+        await ctx.db.reservation.update({
+          where: { id: input.id },
+          data: { rating: input.rating },
+        })
+      ).rating;
     }),
   cancelReservation: protectedProcedure
     .input(z.object({ id: z.string() }))
