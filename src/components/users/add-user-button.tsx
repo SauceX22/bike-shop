@@ -84,7 +84,7 @@ export default function AddUserButton() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>add User</DialogTitle>
+          <DialogTitle>Add User</DialogTitle>
           <DialogDescription>
             Enter the user&apos;s information to add their account.
           </DialogDescription>
@@ -162,7 +162,7 @@ export default function AddUserButton() {
               )}
             />
             <DialogFooter>
-              <Button type="submit">add</Button>
+              <Button type="submit">Add</Button>
             </DialogFooter>
           </form>
         </Form>
