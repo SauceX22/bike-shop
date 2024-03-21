@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { addNewBikeSchema } from "@/lib/validations/bike";
+import { addNewBikeSchema } from "@/lib/validations/general";
 import {
   createTRPCRouter,
   protectedManagerProcedure,

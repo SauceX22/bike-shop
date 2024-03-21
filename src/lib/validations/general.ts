@@ -7,3 +7,5 @@ export const addNewBikeSchema = z.object({
   location: z.string().min(3).max(25),
   available: z.boolean().default(true),
 });
+
+export const ratingSchema = z.coerce.number().int().min(1).max(5);
