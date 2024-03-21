@@ -105,29 +105,27 @@ const ReservationSection = ({ bike, reservedDates }: Props) => {
 
   return (
     <div className="flex gap-2 w-full">
-      <div className="w-fit">
-        <Calendar
-          mode="range"
-          selected={date}
-          onSelect={setDateNoOverlap}
-          disabled={reservedDates}
-          className="rounded-md border"
-          footer={
-            <Button
-              variant="outline"
-              className="text-muted-foreground text-sm text-center w-full mt-2"
-              onClick={() =>
-                setDate({
-                  from: undefined,
-                  to: undefined,
-                })
-              }
-            >
-              clear
-            </Button>
-          }
-        />
-      </div>
+      <Calendar
+        mode="range"
+        selected={date}
+        onSelect={setDateNoOverlap}
+        disabled={reservedDates}
+        className="rounded-md border flex-shrink-0"
+        footer={
+          <Button
+            variant="outline"
+            className="text-muted-foreground text-sm text-center w-full mt-2"
+            onClick={() =>
+              setDate({
+                from: undefined,
+                to: undefined,
+              })
+            }
+          >
+            clear
+          </Button>
+        }
+      />
       <Card className="w-full flex flex-col">
         <CardHeader>
           <CardTitle>Bike Reservation Details</CardTitle>
