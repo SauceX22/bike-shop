@@ -111,6 +111,10 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        if (!user.enabled) {
+          return null;
+        }
+
         return user;
       },
     }),
