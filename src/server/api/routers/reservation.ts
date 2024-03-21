@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  protectedUserProcedure,
+} from "@/server/api/trpc";
 
 // startDate DateTime
 // endDate   DateTime
@@ -39,6 +43,19 @@ export const reservationRouter = createTRPCRouter({
       include: { bike: true },
     });
   }),
+  rateBike: protectedUserProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        rating: z.number().int().min(1).max(5),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.reservation.update({
+        where: { id: input.id },
+        data: { rating: input.rating },
+      });
+    }),
   cancelReservation: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
