@@ -13,16 +13,17 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/client";
-import { type RouterOutputs } from "@/trpc/shared";
+import { type Reservation, type User } from "@prisma/client";
 import { notFound, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 type Props = {
-  reservation: RouterOutputs["reservation"]["getReservationWithBike"];
+  reservation: Reservation;
+  reservedBy: User;
 };
 
-const DeleteReservationButton = ({ reservation }: Props) => {
+const DeleteReservationButton = ({ reservation, reservedBy }: Props) => {
   const apiUtils = api.useUtils();
   const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -40,7 +41,7 @@ const DeleteReservationButton = ({ reservation }: Props) => {
       },
       async onSuccess(data, variables, context) {
         toast.success("Reservation deleted", {
-          description: `Reservation for user *${reservation?.reservedBy.name}* deleted successfully.`,
+          description: `Reservation for user *${reservedBy.name}* deleted successfully.`,
         });
 
         await apiUtils.reservation.invalidate();
@@ -60,7 +61,7 @@ const DeleteReservationButton = ({ reservation }: Props) => {
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete{" "}
-            <b>{reservation.reservedBy.name}&apos;s</b> reservation.
+            <b>{reservedBy.name}&apos;s</b> reservation.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

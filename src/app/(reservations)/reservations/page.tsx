@@ -86,7 +86,10 @@ export default async function ReservationsPage() {
                       </TableCell>
                       <TableCell>{res.rating ?? "N/A"}</TableCell>
                       <TableCell>
-                        <DeleteReservationButton reservation={res} />
+                        <DeleteReservationButton
+                          reservation={res}
+                          reservedBy={res.reservedBy}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}

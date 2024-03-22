@@ -2,7 +2,7 @@ import BikeEditSection from "@/components/bikes/bike-edit-section";
 import ReservationSection from "@/components/bikes/reservation-section";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
-import { buttonVariants } from "@/components/ui/button";
+import DeleteReservationButton from "@/components/delete-reservation-button";
 import {
   Card,
   CardContent,
@@ -26,7 +26,6 @@ import { api } from "@/trpc/server";
 import { compareDesc, format, isPast } from "date-fns";
 import type { Metadata } from "next";
 import { unstable_noStore } from "next/cache";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 type Props = {
@@ -132,12 +131,10 @@ export default async function BikeDetailsPage({
                         </TableCell>
                         <TableCell>{res.rating ?? "N/A"}</TableCell>
                         <TableCell>
-                          <Link
-                            href={`/reservations/${res.id}`}
-                            className={cn(buttonVariants(), "w-full")}
-                          >
-                            View
-                          </Link>
+                          <DeleteReservationButton
+                            reservation={res}
+                            reservedBy={res.reservedBy}
+                          />
                         </TableCell>
                       </TableRow>
                     ))}
