@@ -33,7 +33,7 @@ export async function BikeItem({ bike }: BikeItemProps) {
       </CardHeader>
       <CardContent className="grid grid-cols-2 grid-rows-2 items-center justify-between h-full px-6 py-2">
         <span className="text-muted-foreground text-sm col-span-2">
-          <b>Date Added</b> {format(new Date(bike.createdAt), "dd MMM yyyy")}
+          <b>Date Added</b> {format(bike.createdAt, "dd MMM yyyy")}
         </span>
         <span className="text-secondary-foreground flex-shrink-0 flex gap-2 w-fit">
           <MapPin className="w-6 h-6" />
