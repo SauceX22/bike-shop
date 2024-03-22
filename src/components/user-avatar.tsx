@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useMemo } from "react";
 
 interface UserAvatarProps extends AvatarProps {
-  user: Pick<User, "image" | "name">;
+  user: Pick<User, "image" | "name" | "role">;
 }
 
 export function UserAvatar({ user, ...props }: UserAvatarProps) {
@@ -27,8 +27,17 @@ export function UserAvatar({ user, ...props }: UserAvatarProps) {
       : defaultImage;
   }, [user.name]);
 
+  const isManager = user.role === "MANAGER";
+
   return (
-    <Avatar {...props}>
+    <Avatar
+      {...props}
+      className={
+        isManager
+          ? "outline-2 outline-offset-2 outline-dashed outline-orange-500"
+          : ""
+      }
+    >
       {user.image ? (
         <AvatarImage alt="Picture" src={user.image} />
       ) : (
