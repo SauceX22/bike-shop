@@ -61,7 +61,7 @@ export function ReservationItem({ reservation, bike }: ReservationItemProps) {
   });
 
   // Create the debounced function with useCallback to ensure it does not get recreated on every render
-  const debouncedRateBike = debounce(async (value: string) => {
+  const debouncedRateBike = debounce(async (value: number) => {
     const result = ratingSchema.safeParse(value);
     if (result.success) {
       await rateBike({
@@ -144,24 +144,26 @@ export function ReservationItem({ reservation, bike }: ReservationItemProps) {
               </div>
             </CardContent>
           </Card>
-          {reservation.rating ? (
-            <p className="text-center">
-              You rated this bike {reservation.rating} stars
-            </p>
-          ) : (
-            <p className="text-center text-destructive">
-              This bike has not been rated yet
-            </p>
-          )}
-          <RatingGroup
-            ratingSteps={5}
-            className="mx-auto"
-            defaultValue={reservation.rating?.toString() ?? "0"}
-            value={reservation.rating?.toString() ?? "0"}
-            onValueChange={async (value) => {
-              await debouncedRateBike(value);
-            }}
-          />
+          <div className="flex flex-col">
+            {reservation.rating ? (
+              <p className="text-center">
+                You rated this bike {reservation.rating} stars
+              </p>
+            ) : (
+              <p className="text-center text-destructive">
+                This bike has not been rated yet
+              </p>
+            )}
+            <RatingGroup
+              ratingSteps={5}
+              className="mx-auto  "
+              defaultValue={reservation.rating ?? 0}
+              value={reservation.rating ?? 0}
+              onValueChange={async (value) => {
+                await debouncedRateBike(value);
+              }}
+            />
+          </div>
         </CardContent>
         <CardFooter className="mt-auto">
           <Button

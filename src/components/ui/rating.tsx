@@ -5,6 +5,7 @@ import { type LucideIcon, Star } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { ratingSchema } from "@/lib/validations/general";
 
 interface RatingItemProps
   extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
@@ -36,11 +37,17 @@ const RatingItem = React.forwardRef<
 RatingItem.displayName = RadioGroupPrimitive.Item.displayName;
 
 interface RatingGroupProps
-  extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> {
+  extends Omit<
+    React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>,
+    "defaultValue" | "value" | "onValueChange"
+  > {
   Icon?: LucideIcon;
   customLabel?: string;
   ratingSteps?: number;
   readonly?: boolean;
+  defaultValue?: number;
+  value?: number;
+  onValueChange?: (value: number) => void;
 }
 
 const RatingGroup = React.forwardRef<
@@ -59,7 +66,7 @@ const RatingGroup = React.forwardRef<
     ref,
   ) => {
     const [selectedValue, setSelectedValue] = React.useState(
-      Number(props.defaultValue) || 3,
+      props.defaultValue ?? 3,
     );
 
     return (
@@ -72,10 +79,14 @@ const RatingGroup = React.forwardRef<
         {...props}
         ref={ref}
         aria-readonly={readonly}
-        onValueChange={(value) => {
+        defaultValue={selectedValue.toString()}
+        value={selectedValue.toString()}
+        onValueChange={(unsafeValue) => {
           if (readonly) return;
-          setSelectedValue(Number(value));
-          props.onValueChange && props.onValueChange(value);
+          const ratingParsed = ratingSchema.safeParse(unsafeValue);
+          if (!ratingParsed.success) return;
+          setSelectedValue(ratingParsed.data);
+          props.onValueChange && props.onValueChange(ratingParsed.data);
         }}
         tabIndex={readonly ? -1 : 0}
       >
