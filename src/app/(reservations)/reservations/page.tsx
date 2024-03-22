@@ -2,7 +2,6 @@ import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { Icons } from "@/components/icons";
 import { ReservationItem } from "@/components/reservation-item";
-import { buttonVariants } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -19,7 +18,7 @@ import { api } from "@/trpc/server";
 import { compareDesc, format, isPast } from "date-fns";
 import { type Metadata } from "next";
 import { unstable_noStore } from "next/cache";
-import Link from "next/link";
+import DeleteReservationButton from "../../../components/delete-reservation-button";
 
 export const metadata: Metadata = {
   title: "Reservations",
@@ -84,12 +83,7 @@ export default async function ReservationsPage() {
                       </TableCell>
                       <TableCell>{res.rating ?? "N/A"}</TableCell>
                       <TableCell>
-                        <Link
-                          href={`/reservations/${res.id}`}
-                          className={cn(buttonVariants(), "w-full")}
-                        >
-                          View
-                        </Link>
+                        <DeleteReservationButton reservation={res} />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -112,13 +106,15 @@ export default async function ReservationsPage() {
               </TableFooter>
             </Table>
           ) : (
-            reservations.map((reservation) => (
-              <ReservationItem
-                key={reservation.id}
-                reservation={reservation}
-                bike={reservation.bike}
-              />
-            ))
+            <div className="grid gap-4 grid-cols-3">
+              {reservations.map((reservation) => (
+                <ReservationItem
+                  key={reservation.id}
+                  reservation={reservation}
+                  bike={reservation.bike}
+                />
+              ))}
+            </div>
           )
         ) : (
           <div

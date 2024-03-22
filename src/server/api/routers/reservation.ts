@@ -33,6 +33,14 @@ export const reservationRouter = createTRPCRouter({
         },
       });
     }),
+  getReservationWithBike: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.reservation.findUnique({
+        where: { id: input.id },
+        include: { bike: true, reservedBy: true },
+      });
+    }),
   getUserReservations: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.db.reservation.findMany({
       where: { reservedById: ctx.session.user.id },
