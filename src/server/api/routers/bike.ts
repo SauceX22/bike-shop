@@ -43,7 +43,11 @@ export const bikeRouter = createTRPCRouter({
       return await ctx.db.bike.findUnique({
         where: { id: input.id },
         relationLoadStrategy: "query",
-        include: { reservations: true },
+        include: {
+          reservations: {
+            include: { reservedBy: true },
+          },
+        },
       });
     }),
   reserveBike: protectedUserProcedure
@@ -79,8 +83,8 @@ export const bikeRouter = createTRPCRouter({
         if (
           areIntervalsOverlapping(
             {
-              start: new Date(reservation.startDate),
-              end: new Date(reservation.endDate),
+              start: reservation.startDate,
+              end: reservation.endDate,
             },
             { start: input.startDate, end: input.endDate },
           )
@@ -97,8 +101,8 @@ export const bikeRouter = createTRPCRouter({
         data: {
           bike: { connect: { id: input.id } },
           reservedBy: { connect: { id: ctx.session.user.id } },
-          startDate: new Date(input.startDate),
-          endDate: new Date(input.endDate),
+          startDate: input.startDate,
+          endDate: input.endDate,
         },
       });
     }),

@@ -28,8 +28,9 @@ import { cn } from "@/lib/utils";
 import { updateBikeSchema } from "@/lib/validations/general";
 import { api } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Bike } from "@prisma/client";
+import { type Bike } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import React from "react";
 import { SketchPicker } from "react-color";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -37,11 +38,11 @@ import { type z } from "zod";
 
 type Props = {
   bike: Bike;
-};
+} & React.HTMLAttributes<HTMLDivElement>;
 
 type FormData = z.infer<typeof updateBikeSchema>;
 
-const BikeEditSection = ({ bike }: Props) => {
+const BikeEditSection = ({ bike, className }: Props) => {
   const updateBikeForm = useForm<FormData>({
     resolver: zodResolver(updateBikeSchema),
     defaultValues: {
@@ -84,7 +85,7 @@ const BikeEditSection = ({ bike }: Props) => {
   };
 
   return (
-    <div className="flex gap-2 w-full">
+    <div className={cn("flex gap-2 w-full", className)}>
       <Card className="w-full flex flex-col">
         <Form {...updateBikeForm}>
           <form onSubmit={handleSubmit(onSubmit)}>
