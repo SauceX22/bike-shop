@@ -1,5 +1,6 @@
 import { type User } from "@prisma/client";
 
+import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,8 +8,8 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { UserOperations } from "@/components/users/user-operations";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { UserAvatar } from "../user-avatar";
 
 interface UserItemProps {
@@ -36,7 +37,13 @@ export function UserItem({ user }: UserItemProps) {
         </span>
       </CardContent>
       <CardFooter className="p-4">
-        <UserOperations user={user} className="my-auto" />
+        {/* <UserOperations user={user} className="my-auto" /> */}
+        <Link
+          href={`/users/${user.id}`}
+          className={cn(buttonVariants(), "w-full")}
+        >
+          View
+        </Link>
       </CardFooter>
     </Card>
   );
