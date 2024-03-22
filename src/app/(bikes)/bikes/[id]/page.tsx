@@ -2,6 +2,7 @@ import BikeEditSection from "@/components/bikes/bike-edit-section";
 import ReservationSection from "@/components/bikes/reservation-section";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -25,6 +26,7 @@ import { api } from "@/trpc/server";
 import { compareDesc, format, isPast } from "date-fns";
 import type { Metadata } from "next";
 import { unstable_noStore } from "next/cache";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 type Props = {
@@ -94,11 +96,14 @@ export default async function BikeDetailsPage({
                 </TableCaption>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[100px]">User</TableHead>
+                    <TableHead className="w-[100px] text-center">
+                      User
+                    </TableHead>
                     <TableHead>Strat Date</TableHead>
                     <TableHead>End Date</TableHead>
                     <TableHead>Is Past</TableHead>
-                    <TableHead className="text-right">Rating</TableHead>
+                    <TableHead>Rating</TableHead>
+                    <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -125,8 +130,14 @@ export default async function BikeDetailsPage({
                         <TableCell>
                           {isPast(res.endDate) ? "Yes" : "No"}
                         </TableCell>
-                        <TableCell className="text-right">
-                          {res.rating ?? "N/A"}
+                        <TableCell>{res.rating ?? "N/A"}</TableCell>
+                        <TableCell>
+                          <Link
+                            href={`/reservations/${res.id}`}
+                            className={cn(buttonVariants())}
+                          >
+                            View
+                          </Link>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -134,7 +145,7 @@ export default async function BikeDetailsPage({
                 <TableFooter>
                   <TableRow>
                     <TableCell colSpan={4}>Average Rating</TableCell>
-                    <TableCell className="text-right">
+                    <TableCell>
                       {bike.reservations.filter((res) => !!res.rating)
                         .length === 0
                         ? "N/A"
@@ -145,6 +156,7 @@ export default async function BikeDetailsPage({
                           bike.reservations.filter((res) => !!res.rating)
                             .length}
                     </TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 </TableFooter>
               </Table>
