@@ -1,5 +1,6 @@
 import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
+import DeleteReservationButton from "@/components/delete-reservation-button";
 import { Icons } from "@/components/icons";
 import { ReservationItem } from "@/components/reservation-item";
 import {
@@ -18,11 +19,10 @@ import { api } from "@/trpc/server";
 import { compareDesc, format, isPast } from "date-fns";
 import { type Metadata } from "next";
 import { unstable_noStore } from "next/cache";
-import DeleteReservationButton from "../../../components/delete-reservation-button";
 
 export const metadata: Metadata = {
   title: "Reservations",
-  description: "Create and manage your reservations.",
+  description: "Manage reservations made by your users.",
 };
 
 export default async function ReservationsPage() {
@@ -35,7 +35,10 @@ export default async function ReservationsPage() {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Reservations" text="Manage your reservations" />
+      <DashboardHeader
+        heading="Reservations"
+        text="Manage reservations made by your users."
+      />
       <div>
         {reservations?.length ? (
           isManager ? (
