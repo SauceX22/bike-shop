@@ -7,12 +7,14 @@ import { cn } from "@/lib/utils";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { type Metadata } from "next";
+import { unstable_noStore } from "next/cache";
 
 export const metadata: Metadata = {
   title: "Bikes",
 };
 
 export default async function BikesPage() {
+  unstable_noStore();
   const session = await getServerAuthSession();
   const isManager = session?.user.role === "MANAGER";
   const bikes = isManager

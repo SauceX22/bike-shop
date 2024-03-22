@@ -55,7 +55,7 @@ export default async function BikeDetailsPage({
         }
       />
       {isManager ? (
-        <BikeEditSection bikeId={bike.id} />
+        <BikeEditSection bike={bike} />
       ) : (
         <ReservationSection
           bike={bike}

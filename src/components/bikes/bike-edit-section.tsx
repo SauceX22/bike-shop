@@ -28,21 +28,29 @@ import { cn } from "@/lib/utils";
 import { updateBikeSchema } from "@/lib/validations/general";
 import { api } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { notFound, useRouter } from "next/navigation";
+import { Bike } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { SketchPicker } from "react-color";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { type z } from "zod";
 
 type Props = {
-  bikeId: string;
+  bike: Bike;
 };
 
 type FormData = z.infer<typeof updateBikeSchema>;
 
-const BikeEditSection = ({ bikeId }: Props) => {
+const BikeEditSection = ({ bike }: Props) => {
   const updateBikeForm = useForm<FormData>({
     resolver: zodResolver(updateBikeSchema),
+    defaultValues: {
+      name: bike.name,
+      model: bike.model,
+      location: bike.location,
+      color: bike.color,
+      available: bike.available,
+    },
   });
   const {
     handleSubmit,
@@ -51,22 +59,6 @@ const BikeEditSection = ({ bikeId }: Props) => {
 
   const apiUtils = api.useUtils();
   const router = useRouter();
-
-  const { refetch: refetchBikes } = api.bike.getAllBikes.useQuery();
-  const { data: bike, refetch: refetchBikesWRes } =
-    api.bike.getBikeWithReservations.useQuery(
-      {
-        id: bikeId,
-      },
-      {
-        onSettled(data, error) {
-          if (!!error || !data) {
-            return notFound();
-          }
-          updateBikeForm.reset({ ...data });
-        },
-      },
-    );
 
   const { mutateAsync: updateBike, isLoading } =
     api.bike.updateBike.useMutation({
@@ -80,15 +72,15 @@ const BikeEditSection = ({ bikeId }: Props) => {
           description: "Updated bike info is now visible to users.",
         });
 
-        await refetchBikes();
         await apiUtils.bike.invalidate();
         router.refresh();
         router.push("/bikes");
+        router.refresh();
       },
     });
 
   const onSubmit = async (data: FormData) => {
-    await updateBike({ id: bikeId, ...data });
+    await updateBike({ id: bike.id, ...data });
   };
 
   return (
