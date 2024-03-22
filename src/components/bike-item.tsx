@@ -1,6 +1,5 @@
 import { type Bike } from "@prisma/client";
 
-import DeleteBikeButton from "@/components/delete-bike-button";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -47,7 +46,6 @@ export async function BikeItem({ bike }: BikeItemProps) {
       <CardFooter className="mt-4">
         {isManager ? (
           <div className="flex flex-col gap-4 w-full">
-            <DeleteBikeButton bike={bike} />
             <Link
               href={`/bikes/${bike.id}`}
               className={cn(

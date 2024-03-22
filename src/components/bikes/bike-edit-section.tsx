@@ -1,5 +1,6 @@
 "use client";
 
+import DeleteBikeButton from "@/components/delete-bike-button";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -88,7 +89,7 @@ const BikeEditSection = ({ bike, className }: Props) => {
     <div className={cn("flex gap-2 w-full", className)}>
       <Card className="w-full flex flex-col">
         <Form {...updateBikeForm}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form>
             <CardHeader>
               <CardTitle>Bike Details</CardTitle>
               <CardDescription>
@@ -211,13 +212,19 @@ const BikeEditSection = ({ bike, className }: Props) => {
                 />
               </div>
             </CardContent>
-            <CardFooter className="mt-auto">
-              <Button className="w-full" size="default">
-                Update Bike Info
-              </Button>
-            </CardFooter>
           </form>
         </Form>
+        <CardFooter className="mt-auto flex flex-col gap-4">
+          <Button
+            onClick={updateBikeForm.handleSubmit(onSubmit)}
+            disabled={isLoading}
+            className="w-full"
+            size="default"
+          >
+            Update Bike Info
+          </Button>
+          <DeleteBikeButton bike={bike} />
+        </CardFooter>
       </Card>
     </div>
   );
