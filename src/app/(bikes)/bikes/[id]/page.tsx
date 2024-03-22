@@ -134,7 +134,7 @@ export default async function BikeDetailsPage({
                         <TableCell>
                           <Link
                             href={`/reservations/${res.id}`}
-                            className={cn(buttonVariants())}
+                            className={cn(buttonVariants(), "w-full")}
                           >
                             View
                           </Link>
@@ -144,7 +144,9 @@ export default async function BikeDetailsPage({
                 </TableBody>
                 <TableFooter>
                   <TableRow>
-                    <TableCell colSpan={4}>Average Rating</TableCell>
+                    <TableCell colSpan={4} className="text-right">
+                      Average Rating
+                    </TableCell>
                     <TableCell>
                       {bike.reservations.filter((res) => !!res.rating)
                         .length === 0

@@ -2,9 +2,24 @@ import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { Icons } from "@/components/icons";
 import { ReservationItem } from "@/components/reservation-item";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
+import { compareDesc, format, isPast } from "date-fns";
 import { type Metadata } from "next";
+import { unstable_noStore } from "next/cache";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Reservations",
@@ -12,23 +27,99 @@ export const metadata: Metadata = {
 };
 
 export default async function ReservationsPage() {
-  const reservations =
-    await api.reservation.getUserReservationsWithBikes.query();
+  unstable_noStore();
+  const session = await getServerAuthSession();
+  const isManager = session?.user.role === "MANAGER";
+  const reservations = isManager
+    ? await api.reservation.getAllReservations.query()
+    : await api.reservation.getUserReservationsWithBikes.query();
 
   return (
     <DashboardShell>
       <DashboardHeader heading="Reservations" text="Manage your reservations" />
       <div>
         {reservations?.length ? (
-          <div className="grid gap-4 grid-cols-3">
-            {reservations.map((reservation) => (
+          isManager ? (
+            <Table>
+              <TableCaption>
+                A list of all reservations made by users.
+              </TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[10rem] text-center">Bike</TableHead>
+                  <TableHead className="w-[10rem] text-center">User</TableHead>
+                  <TableHead>Strat Date</TableHead>
+                  <TableHead>End Date</TableHead>
+                  <TableHead>Is Past</TableHead>
+                  <TableHead>Rating</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {reservations
+                  .sort((a, b) => compareDesc(a.startDate, b.startDate))
+                  .map((res) => (
+                    <TableRow
+                      key={res.id}
+                      className={cn({
+                        "text-muted hover:text-muted-foreground": isPast(
+                          res.endDate,
+                        ),
+                      })}
+                    >
+                      <TableCell className="font-medium">
+                        {res.bike.name}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {res.reservedBy.name ?? res.reservedBy.email}
+                      </TableCell>
+                      <TableCell>
+                        {format(res.startDate, "MMM dd, yyyy")}
+                      </TableCell>
+                      <TableCell>
+                        {format(res.endDate, "MMM dd, yyyy")}
+                      </TableCell>
+                      <TableCell>
+                        {isPast(res.endDate) ? "Yes" : "No"}
+                      </TableCell>
+                      <TableCell>{res.rating ?? "N/A"}</TableCell>
+                      <TableCell>
+                        <Link
+                          href={`/reservations/${res.id}`}
+                          className={cn(buttonVariants(), "w-full")}
+                        >
+                          View
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={5} className="text-right">
+                    Average Rating
+                  </TableCell>
+                  <TableCell>
+                    {reservations.filter((res) => !!res.rating).length === 0
+                      ? "N/A"
+                      : reservations.reduce(
+                          (acc, curr) => acc + (curr.rating ?? 0),
+                          0,
+                        ) / reservations.filter((res) => !!res.rating).length}
+                  </TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+          ) : (
+            reservations.map((reservation) => (
               <ReservationItem
                 key={reservation.id}
                 reservation={reservation}
                 bike={reservation.bike}
               />
-            ))}
-          </div>
+            ))
+          )
         ) : (
           <div
             className={cn(

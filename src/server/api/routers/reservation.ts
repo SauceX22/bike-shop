@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import {
   createTRPCRouter,
+  protectedManagerProcedure,
   protectedProcedure,
   protectedUserProcedure,
 } from "@/server/api/trpc";
@@ -40,7 +41,12 @@ export const reservationRouter = createTRPCRouter({
   getUserReservationsWithBikes: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.db.reservation.findMany({
       where: { reservedById: ctx.session.user.id },
-      include: { bike: true },
+      include: { bike: true, reservedBy: true },
+    });
+  }),
+  getAllReservations: protectedManagerProcedure.query(async ({ ctx }) => {
+    return await ctx.db.reservation.findMany({
+      include: { bike: true, reservedBy: true },
     });
   }),
   rateBike: protectedUserProcedure
