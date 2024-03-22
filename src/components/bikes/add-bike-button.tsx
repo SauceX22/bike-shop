@@ -41,6 +41,13 @@ type FormData = z.infer<typeof addNewBikeSchema>;
 export default function AddBikeButton() {
   const addBikeForm = useForm<FormData>({
     resolver: zodResolver(addNewBikeSchema),
+    defaultValues: {
+      name: "",
+      model: "",
+      location: "",
+      color: "#fff",
+      available: true,
+    },
   });
   const {
     handleSubmit,

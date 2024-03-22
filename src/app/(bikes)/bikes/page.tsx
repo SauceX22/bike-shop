@@ -4,6 +4,7 @@ import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
+import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { type Metadata } from "next";
 
@@ -12,7 +13,11 @@ export const metadata: Metadata = {
 };
 
 export default async function BikesPage() {
-  const bikes = await api.bike.getAvailableBikes.query();
+  const session = await getServerAuthSession();
+  const isManager = session?.user.role === "MANAGER";
+  const bikes = isManager
+    ? await api.bike.getAllBikes.query()
+    : await api.bike.getAvailableBikes.query();
 
   return (
     <>

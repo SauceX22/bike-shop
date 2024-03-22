@@ -13,6 +13,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { getServerAuthSession } from "@/server/auth";
+import { format } from "date-fns";
 import { MapPin } from "lucide-react";
 import Link from "next/link";
 
@@ -25,12 +26,15 @@ export async function BikeItem({ bike }: BikeItemProps) {
   const isManager = session?.user.role === "MANAGER";
 
   return (
-    <Card className="h-64 flex flex-col">
-      <CardHeader>
+    <Card className="h-80 flex flex-col">
+      <CardHeader className="pb-2">
         <CardTitle>{bike.name}</CardTitle>
         <CardDescription>{bike.model}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-row items-center justify-between mb-auto px-6 py-2">
+      <CardContent className="grid grid-cols-2 grid-rows-2 items-center justify-between h-full px-6 py-2">
+        <span className="text-muted-foreground text-sm col-span-2">
+          <b>Date Added</b> {format(new Date(bike.createdAt), "dd MMM yyyy")}
+        </span>
         <span className="text-secondary-foreground flex-shrink-0 flex gap-2 w-fit">
           <MapPin className="w-6 h-6" />
           {bike.location}
@@ -40,9 +44,22 @@ export async function BikeItem({ bike }: BikeItemProps) {
           style={{ backgroundColor: bike.color }}
         ></span>
       </CardContent>
-      <CardFooter className="mt-auto">
+      <CardFooter className="mt-4">
         {isManager ? (
-          <DeleteBikeButton bike={bike} />
+          <div className="flex flex-col gap-4 w-full">
+            <DeleteBikeButton bike={bike} />
+            <Link
+              href={`/bikes/${bike.id}`}
+              className={cn(
+                buttonVariants({
+                  variant: "outline",
+                }),
+                "w-full",
+              )}
+            >
+              Edit
+            </Link>
+          </div>
         ) : (
           <Link
             href={`/bikes/${bike.id}`}

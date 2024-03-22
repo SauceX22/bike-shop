@@ -8,4 +8,6 @@ export const addNewBikeSchema = z.object({
   available: z.boolean().default(true),
 });
 
+export const updateBikeSchema = addNewBikeSchema.partial();
+
 export const ratingSchema = z.coerce.number().int().min(1).max(5);

@@ -1,12 +1,12 @@
+import BikeEditSection from "@/components/bikes/bike-edit-section";
+import ReservationSection from "@/components/bikes/reservation-section";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { notFound } from "next/navigation";
-
-import ReservationSection from "@/app/(bikes)/bikes/_components/reservation-section";
 import type { Metadata } from "next";
 import { unstable_noStore } from "next/cache";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: { id: string };
@@ -17,11 +17,15 @@ export async function generateMetadata({
 }: {
   params: { id: string };
 }): Promise<Metadata> {
+  const session = await getServerAuthSession();
   const bike = await api.bike.getBike.query({ id: bikeId });
+  const isManager = session?.user.role === "MANAGER";
 
   return {
     title: bike?.name,
-    description: bike?.model,
+    description: isManager
+      ? "Edit bike details"
+      : "Reserve this bike for your next adventure.",
   };
 }
 
@@ -32,6 +36,7 @@ export default async function BikeDetailsPage({
 }) {
   unstable_noStore();
   const session = await getServerAuthSession();
+  const isManager = session?.user.role === "MANAGER";
 
   const bike = await api.bike.getBikeWithReservations.query({ id: bikeId });
 
@@ -43,9 +48,15 @@ export default async function BikeDetailsPage({
     <DashboardShell>
       <DashboardHeader
         heading={bike?.name}
-        text="Reserve this bike for your next adventure."
+        text={
+          isManager
+            ? "Edit bike details"
+            : "Reserve this bike for your next adventure."
+        }
       />
-      <div>
+      {isManager ? (
+        <BikeEditSection bikeId={bike.id} />
+      ) : (
         <ReservationSection
           bike={bike}
           reservedDates={bike.reservations.map((resrv) => ({
@@ -53,7 +64,7 @@ export default async function BikeDetailsPage({
             to: new Date(resrv.endDate),
           }))}
         />
-      </div>
+      )}
     </DashboardShell>
   );
 }

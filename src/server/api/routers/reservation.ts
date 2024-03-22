@@ -13,7 +13,7 @@ import {
 // reservedById String
 
 export const reservationRouter = createTRPCRouter({
-  createReservation: protectedProcedure
+  createReservation: protectedUserProcedure
     .input(
       z.object({
         startDate: z.date(),

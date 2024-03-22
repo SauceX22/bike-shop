@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { addNewBikeSchema } from "@/lib/validations/general";
+import { addNewBikeSchema, updateBikeSchema } from "@/lib/validations/general";
 import {
   createTRPCRouter,
   protectedManagerProcedure,
@@ -24,6 +24,9 @@ export const bikeRouter = createTRPCRouter({
         },
       });
     }),
+  getAllBikes: protectedManagerProcedure.query(async ({ ctx }) => {
+    return await ctx.db.bike.findMany();
+  }),
   getAvailableBikes: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.db.bike.findMany({
       where: { available: true },
@@ -105,17 +108,7 @@ export const bikeRouter = createTRPCRouter({
         .object({
           id: z.string(),
         })
-        .and(
-          z
-            .object({
-              name: z.string(),
-              model: z.string(),
-              color: z.string(),
-              location: z.string(),
-              available: z.boolean(),
-            })
-            .partial(),
-        ),
+        .and(updateBikeSchema),
     )
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.bike.update({
