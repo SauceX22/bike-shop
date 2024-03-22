@@ -1,5 +1,6 @@
 import { type Bike } from "@prisma/client";
 
+import DeleteBikeButton from "@/components/delete-bike-button";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -11,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { getServerAuthSession } from "@/server/auth";
 import { MapPin } from "lucide-react";
 import Link from "next/link";
 
@@ -18,7 +20,10 @@ interface BikeItemProps {
   bike: Bike;
 }
 
-export function BikeItem({ bike }: BikeItemProps) {
+export async function BikeItem({ bike }: BikeItemProps) {
+  const session = await getServerAuthSession();
+  const isManager = session?.user.role === "MANAGER";
+
   return (
     <Card className="h-64 flex flex-col">
       <CardHeader>
@@ -36,12 +41,16 @@ export function BikeItem({ bike }: BikeItemProps) {
         ></span>
       </CardContent>
       <CardFooter className="mt-auto">
-        <Link
-          href={`/bikes/${bike.id}`}
-          className={cn(buttonVariants(), "w-full")}
-        >
-          Reserve
-        </Link>
+        {isManager ? (
+          <DeleteBikeButton bike={bike} />
+        ) : (
+          <Link
+            href={`/bikes/${bike.id}`}
+            className={cn(buttonVariants(), "w-full")}
+          >
+            Reserve
+          </Link>
+        )}
       </CardFooter>
     </Card>
   );
