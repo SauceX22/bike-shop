@@ -63,6 +63,7 @@ const ReservationSection = ({ bike, reservedDates }: Props) => {
         to: undefined,
       });
       router.push("/reservations");
+      router.refresh();
     },
   });
 
