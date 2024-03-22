@@ -4,7 +4,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { UserAccountNav } from "@/components/user-account-nav";
 import { dashboardConfig } from "@/config/dashboard";
 import { getServerAuthSession } from "@/server/auth";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
@@ -17,6 +17,10 @@ export default async function DashboardLayout({
 
   if (!session?.user) {
     redirect("/auth/login");
+  }
+
+  if (session.user.role === "USER") {
+    notFound();
   }
 
   return (
