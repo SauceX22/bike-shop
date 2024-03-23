@@ -90,7 +90,8 @@ export default async function UserDetailsPage({
               </TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px] text-center">User</TableHead>
+                  <TableHead className="w-[100px] text-center">Bike</TableHead>
+                  <TableHead>Bike Model</TableHead>
                   <TableHead>Strat Date</TableHead>
                   <TableHead>End Date</TableHead>
                   <TableHead>Is Past</TableHead>
@@ -111,8 +112,9 @@ export default async function UserDetailsPage({
                       })}
                     >
                       <TableCell className="font-medium">
-                        {userWithRes.name ?? userWithRes.email}
+                        {res.bike.name}
                       </TableCell>
+                      <TableCell>{res.bike.model}</TableCell>
                       <TableCell>
                         {format(res.startDate, "MMM dd, yyyy")}
                       </TableCell>
@@ -134,7 +136,7 @@ export default async function UserDetailsPage({
               </TableBody>
               <TableFooter>
                 <TableRow>
-                  <TableCell colSpan={4} className="text-right">
+                  <TableCell colSpan={5} className="text-right">
                     Average Rating
                   </TableCell>
                   <TableCell>
