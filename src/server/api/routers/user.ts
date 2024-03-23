@@ -93,6 +93,7 @@ export const userRouter = createTRPCRouter({
         name: z.string(),
         email: z.string().email(),
         role: z.nativeEnum(UserRole),
+        enabled: z.boolean().default(true),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -101,6 +102,7 @@ export const userRouter = createTRPCRouter({
           name: input.name,
           email: input.email,
           role: input.role,
+          enabled: input.enabled,
         },
       });
     }),

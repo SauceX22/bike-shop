@@ -17,4 +17,5 @@ export const addNewUserSchema = userAuthRegisterSchema
   })
   .extend({
     role: z.nativeEnum(UserRole),
+    enabled: z.boolean().default(true),
   });

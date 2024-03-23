@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { addNewUserSchema } from "@/lib/validations/auth";
 import { api } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,6 +42,12 @@ type FormData = z.infer<typeof addNewUserSchema>;
 export default function AddUserButton() {
   const addUserForm = useForm<FormData>({
     resolver: zodResolver(addNewUserSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      role: "USER",
+      enabled: true,
+    },
   });
   const {
     handleSubmit,
@@ -74,6 +81,7 @@ export default function AddUserButton() {
       name: data.name,
       email: data.email,
       role: data.role,
+      enabled: data.enabled,
     });
   }
 
@@ -158,6 +166,22 @@ export default function AddUserButton() {
                     </Select>
                   </FormControl>
                   <FormMessage>{errors.role?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={addUserForm.control}
+              name="enabled"
+              render={({ field }) => (
+                <FormItem className="mt-2">
+                  <FormLabel htmlFor="enabled">Enabled for Rent</FormLabel>
+                  <FormControl id="enabled">
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage>{errors.enabled?.message}</FormMessage>
                 </FormItem>
               )}
             />
