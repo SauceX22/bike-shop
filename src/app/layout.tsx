@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import NextTopLoader from "nextjs-toploader";
 
 import { SessionProvider } from "@/components/providers/session-provider";
 import { TRPCReactProvider } from "@/trpc/client";
@@ -35,9 +36,20 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
+              <NextTopLoader
+                color="#7022dd"
+                initialPosition={0.08}
+                crawlSpeed={200}
+                height={2}
+                crawl={true}
+                showSpinner={true}
+                easing="ease"
+                speed={200}
+                shadow="0 0 10px #7022dd,0 0 5px #7022dd"
+              />
               {children}
+              <Toaster richColors duration={2700} />
             </ThemeProvider>
-            <Toaster richColors duration={2700} />
           </TRPCReactProvider>
         </SessionProvider>
       </body>
