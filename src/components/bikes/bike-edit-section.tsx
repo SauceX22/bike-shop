@@ -25,6 +25,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
+import { revalidatePathCache } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { updateBikeSchema } from "@/lib/validations/general";
 import { api } from "@/trpc/client";
@@ -75,9 +76,8 @@ const BikeEditSection = ({ bike, className }: Props) => {
         });
 
         await apiUtils.bike.invalidate();
-        router.refresh();
+        revalidatePathCache("/bikes");
         router.push("/bikes");
-        router.refresh();
       },
     });
 

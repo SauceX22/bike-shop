@@ -17,6 +17,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { revalidatePathCache } from "@/lib/actions";
 import { api } from "@/trpc/client";
 import { type Bike } from "@prisma/client";
 import { areIntervalsOverlapping, format, isSameYear } from "date-fns";
@@ -57,13 +58,12 @@ const ReservationSection = ({ bike, reservedDates }: Props) => {
 
       await apiUtils.reservation.invalidate();
       await apiUtils.bike.invalidate();
-      router.refresh();
       setDate({
         from: undefined,
         to: undefined,
       });
+      revalidatePathCache("/reservations");
       router.push("/reservations");
-      router.refresh();
     },
   });
 

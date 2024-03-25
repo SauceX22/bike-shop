@@ -18,10 +18,8 @@ export const filterFormSchema = z.object({
     .enum(["all", "name", "model", "location", "ratingAvg"])
     .default("all"),
   // doa is a range of dates
-  doa: z
-    .object({
-      from: z.date(),
-      to: z.date().optional(),
-    })
-    .optional(),
+  doa: z.object({
+    from: z.date().optional(),
+    to: z.date().optional(),
+  }),
 });

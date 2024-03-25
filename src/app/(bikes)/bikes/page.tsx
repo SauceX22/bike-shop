@@ -32,6 +32,9 @@ export default async function BikesPage({
   // search any property of the bike if queryType is all
   // otherwise search the specific property
   const bikes = await db.bike.findMany({
+    orderBy: {
+      updatedAt: "desc",
+    },
     where: query
       ? {
           OR: [

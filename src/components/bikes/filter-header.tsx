@@ -22,12 +22,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { searchAction } from "@/lib/actions";
+import { clearAction, searchAction } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { filterFormSchema } from "@/lib/validations/general";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon, Search } from "lucide-react";
+import { CalendarIcon, Search, SearchX } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -37,23 +37,40 @@ type FormData = z.infer<typeof filterFormSchema>;
 
 const FilterHeader = () => {
   const searchParams = useSearchParams();
-  const urlQuery = searchParams.get("query");
+  const querySP = searchParams.get("query");
+  const doaFromSP = searchParams.get("doaFrom");
+  const doaToSP = searchParams.get("doaTo");
 
   const filterForm = useForm<FormData>({
     resolver: zodResolver(filterFormSchema),
     defaultValues: {
-      query: urlQuery ?? undefined,
+      query: querySP ?? undefined,
       queryType: "all",
-      doa: undefined,
+      doa: {
+        from: doaFromSP ? new Date(doaFromSP) : undefined,
+        to: doaToSP ? new Date(doaToSP) : undefined,
+      },
     },
   });
 
   async function onSubmit(data: FormData) {
-    await searchAction({
-      query: data.query,
-      queryType: data.queryType,
-      doa: data.doa,
-    });
+    await searchAction(
+      {
+        query: data.query,
+        queryType: data.queryType,
+        doa: data.doa,
+      },
+      "/bikes",
+    );
+
+    // if notion is used, replace with notion toast
+    if (!data.query && !data.doa?.from && !data.doa?.to) {
+      return toast.info("Showing all bikes", {
+        description: "All bikes are displayed below",
+        duration: 1000,
+      });
+    }
+
     toast.info('Search results for "' + data.query + '"', {
       description: "Search results are displayed below",
       duration: 1000,
@@ -64,7 +81,7 @@ const FilterHeader = () => {
     <Form {...filterForm}>
       <form
         onSubmit={filterForm.handleSubmit(onSubmit)}
-        className="w-full grid gap-2 grid-cols-6 grid-rows-1"
+        className="w-full grid gap-2 grid-cols-8 grid-rows-1"
       >
         <div className="relative col-span-2">
           <FormField
@@ -105,18 +122,18 @@ const FilterHeader = () => {
           control={filterForm.control}
           name="doa"
           render={({ field }) => (
-            <FormItem className="flex flex-col col-span-2">
+            <FormItem className="flex flex-col col-span-3">
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
-                      variant={"outline"}
+                      variant="outline"
                       className={cn(
                         "pl-3 text-left font-normal w-full",
                         !field.value && "text-muted-foreground",
                       )}
                     >
-                      {field.value ? (
+                      {field.value?.from && field.value?.to ? (
                         <span>
                           <span className="underline">
                             {format(field.value.from, "PPP")}
@@ -137,7 +154,10 @@ const FilterHeader = () => {
                   <Calendar
                     {...field}
                     mode="range"
-                    selected={field.value}
+                    selected={{
+                      from: field.value?.from,
+                      to: field.value?.to,
+                    }}
                     onSelect={(dateRange) => {
                       console.log(dateRange);
                       if (!dateRange?.from) return;
@@ -152,7 +172,10 @@ const FilterHeader = () => {
                         variant="outline"
                         className="text-muted-foreground text-sm text-center w-full mt-2"
                         onClick={() => {
-                          filterForm.setValue("doa", undefined);
+                          filterForm.setValue("doa", {
+                            from: undefined,
+                            to: undefined,
+                          });
                         }}
                       >
                         clear
@@ -165,8 +188,19 @@ const FilterHeader = () => {
             </FormItem>
           )}
         />
+        <Button
+          variant="outline"
+          className="col-span-1"
+          onClick={async (e) => {
+            e.preventDefault();
+            await clearAction();
+          }}
+        >
+          <SearchX className="h-4 w-4 mr-2" />
+          Clear
+        </Button>
         <Button className="col-span-1">
-          <Search className="h-4 w-4" />
+          <Search className="h-4 w-4 mr-2" />
           Search
         </Button>
       </form>

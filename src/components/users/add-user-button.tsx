@@ -31,6 +31,7 @@ import { Switch } from "@/components/ui/switch";
 import { addNewUserSchema } from "@/lib/validations/auth";
 import { api } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -88,7 +89,10 @@ export default function AddUserButton() {
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <DialogTrigger asChild>
-        <Button>Add User</Button>
+        <Button>
+          <Plus className="w-4 h-4 mr-2" />
+          Add User
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>

@@ -1,24 +1,34 @@
 "use server";
 import { filterFormSchema } from "@/lib/validations/general";
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
+import { revalidatePath } from "next/cache";
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-export async function searchAction(data: z.infer<typeof filterFormSchema>) {
+export async function searchAction(
+  data: z.infer<typeof filterFormSchema>,
+  revalidateUrl: string,
+) {
   let url = "/bikes";
 
-  if (!data.query) {
-    if (data.doa?.from && data.doa?.to) {
-      url += `?doa=${data.doa}`;
+  if (data.query) {
+    if (data.queryType) {
+      url += `?query=${data.query}&queryType=${data.queryType}`;
+    } else {
+      url += `?query=${data.query}&queryType=all`;
     }
-  } else {
-    url += `?query=${data.query}&queryType=${data.queryType}`;
   }
 
+  if (data.doa?.from && data.doa?.to) {
+    url += `${data.query ? "&" : "?"}doaFrom=${data.doa.from.toISOString()}&doaTo=${data.doa.to.toISOString()}`;
+  }
   return redirect(url);
 }
 
 export async function clearAction() {
   redirect(`/bikes`);
+}
+
+export async function revalidatePathCache(path: string) {
+  return revalidatePath(path);
 }

@@ -25,11 +25,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
+import { revalidatePathCache } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { addNewBikeSchema } from "@/lib/validations/general";
 import { api } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { SketchPicker } from "react-color";
 import { useForm } from "react-hook-form";
@@ -55,8 +57,7 @@ export default function AddBikeButton() {
   } = addBikeForm;
 
   const [showDialog, setShowDialog] = useState(false);
-  const router = useRouter();
-
+  const path = usePathname();
   const apiUtils = api.useUtils();
 
   const { mutateAsync: addBike, isLoading } = api.bike.createBike.useMutation({
@@ -74,7 +75,7 @@ export default function AddBikeButton() {
       });
 
       await apiUtils.bike.invalidate();
-      router.refresh();
+      await revalidatePathCache(path);
     },
   });
 
@@ -93,7 +94,10 @@ export default function AddBikeButton() {
       }}
     >
       <DialogTrigger asChild>
-        <Button onClick={() => setShowDialog(true)}>Add Bike</Button>
+        <Button>
+          <Plus className="w-4 h-4 mr-2" />
+          Add Bike
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>

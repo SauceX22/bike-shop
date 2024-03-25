@@ -25,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/client";
 import { type User } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -68,9 +69,8 @@ const UserEditSection = ({ user, className }: Props) => {
       });
 
       await apiUtils.user.invalidate();
-      router.refresh();
+      revalidatePath("/users");
       router.push("/users");
-      router.refresh();
     },
   });
 
