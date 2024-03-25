@@ -11,3 +11,17 @@ export const addNewBikeSchema = z.object({
 export const updateBikeSchema = addNewBikeSchema.partial();
 
 export const ratingSchema = z.coerce.number().int().min(1).max(5);
+
+export const filterFormSchema = z.object({
+  query: z.string().optional(),
+  queryType: z
+    .enum(["all", "name", "model", "location", "ratingAvg"])
+    .default("all"),
+  // doa is a range of dates
+  doa: z
+    .object({
+      from: z.date(),
+      to: z.date().optional(),
+    })
+    .optional(),
+});

@@ -6,6 +6,7 @@ import {
   protectedProcedure,
   protectedUserProcedure,
 } from "@/server/api/trpc";
+import { TRPCError } from "@trpc/server";
 
 // startDate DateTime
 // endDate   DateTime
@@ -65,10 +66,37 @@ export const reservationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const bike = await ctx.db.bike.findFirst({
+        where: { reservations: { some: { id: input.id } } },
+        include: { reservations: true },
+      });
+
+      if (!bike) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Bike not found",
+        });
+      }
+
+      const oldAverageRatingForBike = bike?.averageRating;
+
+      const newAverageRatingForBike =
+        (oldAverageRatingForBike *
+          bike.reservations.filter((r) => !!r.rating).length +
+          input.rating) /
+        (bike.reservations.filter((r) => !!r.rating).length + 1);
+
       return (
         await ctx.db.reservation.update({
           where: { id: input.id },
-          data: { rating: input.rating },
+          data: {
+            rating: input.rating,
+            bike: {
+              update: {
+                averageRating: newAverageRatingForBike,
+              },
+            },
+          },
         })
       ).rating;
     }),
