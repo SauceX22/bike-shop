@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { getServerAuthSession } from "@/server/auth";
 import { format } from "date-fns";
-import { MapPin } from "lucide-react";
+import { MapPin, Star } from "lucide-react";
 import Link from "next/link";
 
 interface BikeItemProps {
@@ -42,6 +42,10 @@ export async function BikeItem({ bike }: BikeItemProps) {
           className="rounded-full h-8 w-8"
           style={{ backgroundColor: bike.color }}
         ></span>
+        <span className="text-secondary-foreground flex-shrink-0 flex gap-2 w-fit">
+          <Star className="w-6 h-6" />
+          {bike.averageRating}
+        </span>
       </CardContent>
       <CardFooter className="mt-4">
         {isManager ? (
