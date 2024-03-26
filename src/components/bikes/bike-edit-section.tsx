@@ -76,7 +76,7 @@ const BikeEditSection = ({ bike, className }: Props) => {
         });
 
         await apiUtils.bike.invalidate();
-        revalidatePathCache("/bikes");
+        await revalidatePathCache("/bikes");
         router.push("/bikes");
       },
     });

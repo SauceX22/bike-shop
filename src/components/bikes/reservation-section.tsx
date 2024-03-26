@@ -62,7 +62,7 @@ const ReservationSection = ({ bike, reservedDates }: Props) => {
         from: undefined,
         to: undefined,
       });
-      revalidatePathCache("/reservations");
+      await revalidatePathCache("/reservations");
       router.push("/reservations");
     },
   });
