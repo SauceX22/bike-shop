@@ -51,6 +51,12 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
     setIsLoading(false);
 
     if (!signInResult?.ok) {
+      if (signInResult?.error === "BannedError") {
+        return toast.error("Your account has been disabled.", {
+          description: "Please contact support to reinstate your account.",
+        });
+      }
+
       return toast.error("Something went wrong.", {
         description: "Your sign in request failed. Please try again.",
         action: {
