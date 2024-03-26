@@ -13,7 +13,7 @@ export const updateBikeSchema = addNewBikeSchema.partial();
 export const ratingSchema = z.coerce.number().int().min(1).max(5);
 
 export const filterFormSchema = z.object({
-  query: z.string().optional(),
+  query: z.string().default(""),
   queryType: z
     .enum(["all", "name", "model", "location", "ratingAvg"])
     .default("all"),

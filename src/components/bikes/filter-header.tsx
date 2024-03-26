@@ -22,13 +22,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { clearAction, searchAction } from "@/lib/actions";
+import { searchAction } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { filterFormSchema } from "@/lib/validations/general";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, Search, SearchX } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { type z } from "zod";
@@ -37,6 +37,7 @@ type FormData = z.infer<typeof filterFormSchema>;
 
 const FilterHeader = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const querySP = searchParams.get("query");
   const doaFromSP = searchParams.get("doaFrom");
   const doaToSP = searchParams.get("doaTo");
@@ -54,14 +55,11 @@ const FilterHeader = () => {
   });
 
   async function onSubmit(data: FormData) {
-    await searchAction(
-      {
-        query: data.query,
-        queryType: data.queryType,
-        doa: data.doa,
-      },
-      "/bikes",
-    );
+    await searchAction({
+      query: data.query,
+      queryType: data.queryType,
+      doa: data.doa,
+    });
 
     // if notion is used, replace with notion toast
     if (!data.query && !data.doa?.from && !data.doa?.to) {
@@ -171,7 +169,8 @@ const FilterHeader = () => {
                       <Button
                         variant="outline"
                         className="text-muted-foreground text-sm text-center w-full mt-2"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault();
                           filterForm.setValue("doa", {
                             from: undefined,
                             to: undefined,
@@ -193,7 +192,22 @@ const FilterHeader = () => {
           className="col-span-1"
           onClick={async (e) => {
             e.preventDefault();
-            await clearAction();
+            filterForm.reset({
+              query: "",
+              queryType: "all",
+              doa: {
+                from: undefined,
+                to: undefined,
+              },
+            });
+            await searchAction({
+              query: "",
+              queryType: "all",
+              doa: {
+                from: undefined,
+                to: undefined,
+              },
+            });
           }}
         >
           <SearchX className="h-4 w-4 mr-2" />

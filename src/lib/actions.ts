@@ -5,10 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-export async function searchAction(
-  data: z.infer<typeof filterFormSchema>,
-  revalidateUrl: string,
-) {
+export async function searchAction(data: z.infer<typeof filterFormSchema>) {
   let url = "/bikes";
 
   if (data.query) {
@@ -23,10 +20,6 @@ export async function searchAction(
     url += `${data.query ? "&" : "?"}doaFrom=${data.doa.from.toISOString()}&doaTo=${data.doa.to.toISOString()}`;
   }
   return redirect(url);
-}
-
-export async function clearAction() {
-  redirect(`/bikes`);
 }
 
 export async function revalidatePathCache(path: string) {
