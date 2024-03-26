@@ -37,15 +37,15 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               <NextTopLoader
-                color="#7022dd"
+                color="#2247dd"
                 initialPosition={0.08}
-                crawlSpeed={200}
+                crawlSpeed={170}
                 height={2}
                 crawl={true}
-                showSpinner={true}
+                showSpinner={false}
                 easing="ease"
                 speed={200}
-                shadow="0 0 10px #7022dd,0 0 5px #7022dd"
+                shadow="0 0 10px #2247dd,0 0 5px #2247dd"
               />
               {children}
               <Toaster richColors duration={2700} />

@@ -8,6 +8,6 @@ export const siteConfig: SiteConfig = {
   ogImage: "https://avatars.githubusercontent.com/u/66734989?v=4",
   links: {
     twitter: "https://twitter.com/SauceX22",
-    github: "https://github.com/SauceX22",
+    github: "https://github.com/SauceX22/bike-shop",
   },
 };
