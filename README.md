@@ -39,7 +39,7 @@ Access our live demo with the following credentials:
   - Email: `user@gmail.com`
   - Password: `123456`
 
-Demo available at: [https://bike-shop-saucex22.vercel.app/home](#)
+Demo available at: [bike-shop-saucex22.vercel.app/home](https://bike-shop-saucex22.vercel.app/home)
 
 **Note: The credentials above are only for demo purposes, and are not real emails that you can contact.**
 
