@@ -1,13 +1,13 @@
 import { type SiteConfig } from "@/types";
 
 export const siteConfig: SiteConfig = {
-  name: "Taxonomy",
+  name: "Bike Shop",
   description:
-    "An open source application built using the new router, server components and everything new in Next.js 13.",
-  url: "https://tx.shadcn.com",
-  ogImage: "https://tx.shadcn.com/og.jpg",
+    "Rent yourself a bike today, and enjoy the freedom of the open road.",
+  url: "https://github.com/SauceX22",
+  ogImage: "https://avatars.githubusercontent.com/u/66734989?v=4",
   links: {
-    twitter: "https://twitter.com/shadcn",
-    github: "https://github.com/shadcn/taxonomy",
+    twitter: "https://twitter.com/SauceX22",
+    github: "https://github.com/SauceX22/bike-shop",
   },
 };

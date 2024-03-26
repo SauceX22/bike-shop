@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 import { env } from "@/env.mjs";
 
@@ -15,3 +15,10 @@ const globalForPrisma = globalThis as unknown as {
 export const db = globalForPrisma.prisma ?? createPrismaClient();
 
 if (env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+
+export type Models = keyof typeof Prisma.ModelName;
+
+export type ArgsType<T extends Models> =
+  Prisma.TypeMap["model"][T]["operations"]["findMany"]["args"];
+
+export type WhereType<T extends Models> = NonNullable<ArgsType<T>["where"]>;

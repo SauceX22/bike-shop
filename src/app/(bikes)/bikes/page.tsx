@@ -5,12 +5,12 @@ import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { Icons } from "@/components/icons";
 import { Separator } from "@/components/ui/separator";
+import { getFilteredBikes } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { getServerAuthSession } from "@/server/auth";
-import { db } from "@/server/db";
-import { isNumber } from "lodash";
 import { type Metadata } from "next";
 import { unstable_noStore } from "next/cache";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Bikes",
@@ -21,58 +21,22 @@ export default async function BikesPage({
   searchParams,
 }: {
   params: { slug: string };
-  searchParams: { query: string; queryType: string };
+  searchParams: {
+    query?: string;
+    queryType?: string;
+    doaFrom?: string;
+    doaTo?: string;
+  };
 }) {
   unstable_noStore();
   const session = await getServerAuthSession();
+  const isManager = session?.user.role === "MANAGER";
+  if (!isManager) {
+    return notFound();
+  }
 
-  const query = searchParams.query;
-  const queryType = searchParams.queryType;
-
-  // search any property of the bike if queryType is all
-  // otherwise search the specific property
-  const bikes = await db.bike.findMany({
-    orderBy: {
-      updatedAt: "desc",
-    },
-    where: query
-      ? {
-          OR: [
-            queryType === "all" || queryType === "name"
-              ? {
-                  name: {
-                    contains: query,
-                    mode: "insensitive",
-                  },
-                }
-              : {},
-            queryType === "all" || queryType === "model"
-              ? {
-                  model: {
-                    contains: query,
-                    mode: "insensitive",
-                  },
-                }
-              : {},
-            queryType === "all" || queryType === "location"
-              ? {
-                  location: {
-                    contains: query,
-                    mode: "insensitive",
-                  },
-                }
-              : {},
-            (queryType === "all" || queryType === "ratingAvg") &&
-            isNumber(query)
-              ? {
-                  averageRating: {
-                    equals: parseFloat(query),
-                  },
-                }
-              : {},
-          ],
-        }
-      : undefined,
+  const filteredBikes = await getFilteredBikes(searchParams, {
+    availableOnly: false,
   });
 
   return (
@@ -84,9 +48,9 @@ export default async function BikesPage({
         <div className="px-2">
           <FilterHeader />
           <Separator className="my-4" />
-          {bikes?.length ? (
+          {filteredBikes?.length ? (
             <div className="grid gap-4 grid-cols-3">
-              {bikes.map((bike) => (
+              {filteredBikes.map((bike) => (
                 <BikeItem key={bike.id} bike={bike} />
               ))}
             </div>
