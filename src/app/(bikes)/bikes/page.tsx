@@ -5,13 +5,12 @@ import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { Icons } from "@/components/icons";
 import { Separator } from "@/components/ui/separator";
+import { getFilteredBikes } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { getServerAuthSession } from "@/server/auth";
-import { db } from "@/server/db";
-import { areIntervalsOverlapping, isValid } from "date-fns";
-import { isNumber } from "lodash";
 import { type Metadata } from "next";
 import { unstable_noStore } from "next/cache";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Bikes",
@@ -23,113 +22,22 @@ export default async function BikesPage({
 }: {
   params: { slug: string };
   searchParams: {
-    query: string;
-    queryType: string;
-    doaFrom: string;
-    doaTo: string;
+    query?: string;
+    queryType?: string;
+    doaFrom?: string;
+    doaTo?: string;
   };
 }) {
   unstable_noStore();
   const session = await getServerAuthSession();
+  const isManager = session?.user.role === "MANAGER";
+  if (!isManager) {
+    return notFound();
+  }
 
-  const query = searchParams.query;
-  const queryType = searchParams.queryType;
-
-  // search any property of the bike if queryType is all
-  // otherwise search the specific property
-  const bikes = await db.bike.findMany({
-    orderBy: {
-      updatedAt: "desc",
-    },
-    include: {
-      reservations: true,
-    },
-    where: query
-      ? {
-          OR: [
-            queryType === "all" || queryType === "name"
-              ? {
-                  name: {
-                    contains: query,
-                    mode: "insensitive",
-                  },
-                }
-              : {},
-            queryType === "all" || queryType === "model"
-              ? {
-                  model: {
-                    contains: query,
-                    mode: "insensitive",
-                  },
-                }
-              : {},
-            queryType === "all" || queryType === "location"
-              ? {
-                  location: {
-                    contains: query,
-                    mode: "insensitive",
-                  },
-                }
-              : {},
-            (queryType === "all" || queryType === "ratingAvg") &&
-            isNumber(query)
-              ? {
-                  averageRating: {
-                    equals: parseFloat(query),
-                  },
-                }
-              : {},
-          ],
-        }
-      : undefined,
+  const filteredBikes = await getFilteredBikes(searchParams, {
+    availableOnly: false,
   });
-
-  const isFilteringByDate =
-    searchParams.doaFrom &&
-    searchParams.doaTo &&
-    isValid(new Date(searchParams.doaFrom)) &&
-    isValid(new Date(searchParams.doaTo))
-      ? true
-      : false;
-
-  console.log("isFilteringByDate", isFilteringByDate);
-
-  const queryDateRange = {
-    from: new Date(searchParams.doaFrom),
-    to: new Date(searchParams.doaTo),
-  };
-
-  const filteredBikes = isFilteringByDate
-    ? bikes.filter((bike) => {
-        // filter by date of availability
-        if (bike.reservations.length > 0) {
-          const dateRangesNotAvailable = bike.reservations.map((resrv) => ({
-            from: resrv.startDate,
-            to: resrv.endDate,
-          }));
-
-          for (const dateRange of dateRangesNotAvailable) {
-            // has to be available on the start, end and all in between days
-            if (
-              areIntervalsOverlapping(
-                {
-                  start: queryDateRange.from,
-                  end: queryDateRange.to,
-                },
-                {
-                  start: dateRange.from,
-                  end: dateRange.to,
-                },
-                { inclusive: true },
-              )
-            ) {
-              return false;
-            }
-          }
-        }
-        return true;
-      })
-    : bikes;
 
   return (
     <>
