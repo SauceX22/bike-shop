@@ -65,8 +65,8 @@ const FilterHeader = () => {
   });
 
   const debounceSubmit = useCallback(
-    debounce(() => {
-      filterForm.handleSubmit(onSubmit)();
+    debounce(async () => {
+      await filterForm.handleSubmit(onSubmit)();
     }, 500),
     [],
   );
@@ -130,10 +130,10 @@ const FilterHeader = () => {
         className="w-full grid gap-2 grid-cols-8 grid-rows-1"
         onSubmit={filterForm.handleSubmit(onSubmit)}
         onChange={debounceSubmit}
-        onKeyDown={(e) => {
+        onKeyDown={async (e) => {
           if (e.key === "Enter") {
             e.preventDefault();
-            filterForm.handleSubmit(onSubmit)();
+            await filterForm.handleSubmit(onSubmit)();
           }
         }}
       >
@@ -228,7 +228,7 @@ const FilterHeader = () => {
                         to: dateRange.to ?? dateRange.from,
                       });
                     }}
-                    onDayClick={(date) => debounceSubmit()}
+                    onDayClick={async (date) => await debounceSubmit()}
                     className="rounded-md border flex-shrink-0"
                     footer={
                       <Button
