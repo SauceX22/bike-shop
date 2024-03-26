@@ -22,7 +22,6 @@ import { unstable_noStore } from "next/cache";
 
 export const metadata: Metadata = {
   title: "Reservations",
-  description: "Manage reservations made by your users.",
 };
 
 export default async function ReservationsPage() {
@@ -37,7 +36,11 @@ export default async function ReservationsPage() {
     <DashboardShell>
       <DashboardHeader
         heading="Reservations"
-        text="Manage reservations made by your users."
+        text={
+          isManager
+            ? "Manage reservations made by your users."
+            : "Manager your reservations."
+        }
       />
       <div>
         {reservations?.length ? (
