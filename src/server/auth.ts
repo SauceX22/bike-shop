@@ -29,6 +29,8 @@ declare module "next-auth" {
     name: string | null;
     email: string;
     image: string | null;
+    joinedAt: Date;
+    enabled: Boolean;
 
     role: UserRole;
   }
@@ -112,16 +114,13 @@ export const authOptions: NextAuthOptions = {
         }
 
         if (!user.enabled) {
-          return null;
+          // throw a 401 error if the user is not enabled
+          throw new Error("BannedError");
         }
 
         return user;
       },
     }),
-    // GithubProvider({
-    //   clientId: env.GITHUB_CLIENT_ID,
-    //   clientSecret: env.GITHUB_CLIENT_SECRET,
-    // }),
     /**
      * ...add more providers here.
      *

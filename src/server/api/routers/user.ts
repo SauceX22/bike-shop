@@ -106,6 +106,21 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+  setUserRoleStatus: protectedManagerProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        role: z.nativeEnum(UserRole),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.user.update({
+        where: { id: input.id },
+        data: {
+          role: input.role,
+        },
+      });
+    }),
   setUserEnabledStatus: protectedManagerProcedure
     .input(
       z.object({

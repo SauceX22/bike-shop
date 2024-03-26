@@ -12,6 +12,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -94,20 +95,28 @@ export default function AddUserButton() {
           Add User
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-sm">
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Add User</DialogTitle>
           <DialogDescription>
             Enter the user&apos;s information to add their account.
           </DialogDescription>
+          <DialogDescription className="text-red-400/90">
+            Note: The user will have to sign up as usual to complete the
+            registration, however the account will be created with the provided
+            information & privileges.
+          </DialogDescription>
         </DialogHeader>
         <Form {...addUserForm}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="grid grid-cols-2 grid-rows-4 gap-2"
+          >
             <FormField
               control={addUserForm.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="mt-2">
+                <FormItem className="row-span-2">
                   <FormLabel htmlFor="name">Name</FormLabel>
                   <FormControl id="name">
                     <Input
@@ -121,6 +130,10 @@ export default function AddUserButton() {
                     />
                   </FormControl>
                   <FormMessage>{errors.name?.message}</FormMessage>
+                  <FormDescription className="row-span-1">
+                    This name is temporary and will be immediately overwritten
+                    once the user signs up for the first time.
+                  </FormDescription>
                 </FormItem>
               )}
             />
@@ -128,7 +141,7 @@ export default function AddUserButton() {
               control={addUserForm.control}
               name="email"
               render={({ field }) => (
-                <FormItem className="mt-2">
+                <FormItem className="row-span-2">
                   <FormLabel htmlFor="email">Email</FormLabel>
                   <FormControl id="email">
                     <Input
@@ -142,6 +155,10 @@ export default function AddUserButton() {
                     />
                   </FormControl>
                   <FormMessage>{errors.email?.message}</FormMessage>
+                  <FormDescription className="row-span-1">
+                    This email is permanent and cannot be changed. It will be
+                    used to sign up/in to the system.
+                  </FormDescription>
                 </FormItem>
               )}
             />
@@ -149,7 +166,7 @@ export default function AddUserButton() {
               control={addUserForm.control}
               name="role"
               render={({ field }) => (
-                <FormItem className="mt-2">
+                <FormItem className="row-span-2">
                   <FormLabel htmlFor="role">Role</FormLabel>
                   <FormControl id="role">
                     <Select
@@ -170,6 +187,11 @@ export default function AddUserButton() {
                     </Select>
                   </FormControl>
                   <FormMessage>{errors.role?.message}</FormMessage>
+                  <FormDescription className="row-span-1">
+                    User roles determine access: Managers can modify bikes,
+                    users, and reservations but cannot rent bikes. Users can
+                    reserve bikes and view their reservations.
+                  </FormDescription>
                 </FormItem>
               )}
             />
@@ -177,7 +199,7 @@ export default function AddUserButton() {
               control={addUserForm.control}
               name="enabled"
               render={({ field }) => (
-                <FormItem className="mt-2">
+                <FormItem className="w-full gap-2 flex flex-col row-span-2 justify-start">
                   <FormLabel htmlFor="enabled">Enabled for Rent</FormLabel>
                   <FormControl id="enabled">
                     <Switch
@@ -186,6 +208,11 @@ export default function AddUserButton() {
                     />
                   </FormControl>
                   <FormMessage>{errors.enabled?.message}</FormMessage>
+                  <FormDescription className="row-span-1">
+                    If the user is not enabled, they will not be able to sign
+                    into the system. This is useful for users who have been
+                    banned or are no longer allowed to access the site.
+                  </FormDescription>
                 </FormItem>
               )}
             />

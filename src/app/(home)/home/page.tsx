@@ -17,10 +17,8 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage({
-  params,
   searchParams,
 }: {
-  params: { slug: string };
   searchParams: {
     query?: string;
     queryType?: string;

@@ -39,6 +39,24 @@ const UserEditSection = ({ user, className }: Props) => {
   const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showDisableDialog, setShowDisableDialog] = useState(false);
+  const [showRolesDialog, setShowRolesDialog] = useState(false);
+
+  const { mutateAsync: setUserRoleStatus } =
+    api.user.setUserRoleStatus.useMutation({
+      onError(err) {
+        toast.error("Something went wrong.", {
+          description: err.message,
+        });
+      },
+      async onSuccess(data, variables, context) {
+        toast.success("User Role Updated", {
+          description: `User *${user.name}* role status updated to ${data.role} successfully.`,
+        });
+
+        await apiUtils.user.invalidate();
+        router.refresh();
+      },
+    });
 
   const { mutateAsync: setUserEnabledStatus } =
     api.user.setUserEnabledStatus.useMutation({
@@ -48,7 +66,7 @@ const UserEditSection = ({ user, className }: Props) => {
         });
       },
       async onSuccess(data, variables, context) {
-        toast.success("User updated", {
+        toast.success("User Access Status Updated", {
           description: `User *${user.name}* enabled status updated to ${data.enabled} successfully.`,
         });
 
@@ -64,7 +82,7 @@ const UserEditSection = ({ user, className }: Props) => {
       });
     },
     async onSuccess(data, variables, context) {
-      toast.success("User deleted", {
+      toast.success("User Record Deleted", {
         description: `User *${user.name}* deleted successfully.`,
       });
 
@@ -109,21 +127,56 @@ const UserEditSection = ({ user, className }: Props) => {
                 value={user.email}
               />
             </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="role" className="text-sm font-medium">
-                Role
-              </Label>
-              <Input
-                disabled={true}
-                type="text"
-                id="role"
-                className="input"
-                value={user.role}
-              />
-            </div>
           </div>
         </CardContent>
         <CardFooter className="mt-auto flex flex-col gap-4 w-full">
+          <AlertDialog open={showRolesDialog} onOpenChange={setShowRolesDialog}>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant={user.role === "USER" ? "default" : "outline"}
+                className="w-full"
+              >
+                {user.role === "USER"
+                  ? "User is not a Manager"
+                  : "User is a Manager"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action may affect the user&apos;s ability to reserve
+                  bikes. And may allow the user to access the internals of the
+                  system including sensitive data.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className={cn(
+                    buttonVariants({
+                      variant: user.role === "USER" ? "outline" : "default",
+                    }),
+                  )}
+                  onClick={async () => {
+                    if (user.role === "USER") {
+                      await setUserRoleStatus({
+                        id: user.id,
+                        role: "MANAGER",
+                      });
+                    } else {
+                      await setUserRoleStatus({
+                        id: user.id,
+                        role: "USER",
+                      });
+                    }
+                  }}
+                >
+                  {user.role === "USER" ? "Make Manager" : "Make User"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <AlertDialog
             open={showDisableDialog}
             onOpenChange={setShowDisableDialog}
