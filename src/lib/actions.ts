@@ -1,6 +1,6 @@
 "use server";
 import { filterFormSchema } from "@/lib/validations/general";
-import { db, WhereType } from "@/server/db";
+import { db } from "@/server/db";
 import { areIntervalsOverlapping, isValid } from "date-fns";
 import { isNumber } from "lodash";
 import { revalidatePath } from "next/cache";
@@ -10,9 +10,9 @@ import { z } from "zod";
 
 export async function searchAction(
   data: z.infer<typeof filterFormSchema>,
-  callbackUrl?: string,
+  callbackUrl: string,
 ) {
-  let url = callbackUrl ?? "/bikes";
+  let url = callbackUrl;
 
   if (data.query) {
     if (data.queryType) {
@@ -41,53 +41,53 @@ export const getFilteredBikes = async (
   },
   { availableOnly = true },
 ) => {
-  "use server";
-
   const query = searchParams.query;
   const queryType = searchParams.queryType;
   const queryDoaFrom = searchParams.doaFrom;
   const queryDoaTo = searchParams.doaTo;
 
-  function queryObject(query?: string, queryType?: string): WhereType<"Bike"> {
+  const queryObject = (query?: string, queryType?: string) => {
     if (!query) return {};
-    return {
-      OR: [
-        queryType === "all" || queryType === "name"
-          ? {
-              name: {
-                contains: query,
-                mode: "insensitive",
-              },
-            }
-          : {},
-        queryType === "all" || queryType === "model"
-          ? {
-              model: {
-                contains: query,
-                mode: "insensitive",
-              },
-            }
-          : {},
-        queryType === "all" || queryType === "location"
-          ? {
-              location: {
-                contains: query,
-                mode: "insensitive",
-              },
-            }
-          : {},
-        (queryType === "all" || queryType === "ratingAvg") && isNumber(query)
-          ? {
-              averageRating: {
-                equals: parseFloat(query),
-              },
-            }
-          : {},
-      ],
-    };
-  }
+    if (queryType === "all") {
+      return {
+        OR: [
+          {
+            name: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+          {
+            model: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+          {
+            location: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+          {
+            averageRating: {
+              equals: parseFloat(query),
+            },
+          },
+        ],
+      };
+    } else if (queryType) {
+      return {
+        [queryType]: {
+          contains: query,
+          mode: "insensitive",
+        },
+      };
+    } else {
+      return {};
+    }
+  };
 
-  const queryWhereInput = queryObject(query, queryType);
   // search any property of the bike if queryType is all
   // otherwise search the specific property
   const bikes = await db.bike.findMany({
@@ -97,10 +97,47 @@ export const getFilteredBikes = async (
     include: {
       reservations: true,
     },
-    where: {
-      available: availableOnly ? true : undefined,
-      ...queryWhereInput,
-    },
+    where: query
+      ? {
+          available: availableOnly ? true : undefined,
+          OR: [
+            queryType === "all" || queryType === "name"
+              ? {
+                  name: {
+                    contains: query,
+                    mode: "insensitive",
+                  },
+                }
+              : {},
+            queryType === "all" || queryType === "model"
+              ? {
+                  model: {
+                    contains: query,
+                    mode: "insensitive",
+                  },
+                }
+              : {},
+            queryType === "all" || queryType === "location"
+              ? {
+                  location: {
+                    contains: query,
+                    mode: "insensitive",
+                  },
+                }
+              : {},
+            (queryType === "all" || queryType === "ratingAvg") &&
+            isNumber(query)
+              ? {
+                  averageRating: {
+                    equals: parseFloat(query),
+                  },
+                }
+              : {},
+          ],
+        }
+      : {
+          available: availableOnly ? true : undefined,
+        },
   });
 
   const isFilteringByDate =

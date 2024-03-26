@@ -16,11 +16,17 @@ export const metadata: Metadata = {
   title: "Home",
 };
 
-export default async function HomePage(searchParams: {
-  query?: string;
-  queryType?: string;
-  doaFrom: string;
-  doaTo: string;
+export default async function HomePage({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams: {
+    query?: string;
+    queryType?: string;
+    doaFrom?: string;
+    doaTo?: string;
+  };
 }) {
   unstable_noStore();
   const session = await getServerAuthSession();
@@ -37,7 +43,7 @@ export default async function HomePage(searchParams: {
           {isManager ? "Manage User Reservations" : "View Your Reservations"}
         </Link>
       </DashboardHeader>
-      <div>
+      <div className="px-2">
         <FilterHeader />
         <Separator className="my-4" />
         {filteredBikes?.length ? (

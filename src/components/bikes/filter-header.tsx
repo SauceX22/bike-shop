@@ -40,6 +40,7 @@ type FormData = z.infer<typeof filterFormSchema>;
 const FilterHeader = () => {
   const searchParams = useSearchParams();
   const path = usePathname();
+
   const querySP = searchParams.get("query");
   const validatedQueryTypeSP = filterFormSchema.shape.queryType.safeParse(
     searchParams.get("queryType"),
