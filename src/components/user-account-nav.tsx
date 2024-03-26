@@ -4,6 +4,7 @@ import { type User } from "next-auth";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +25,23 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
       <DropdownMenuTrigger>
         <UserAvatar user={{ ...user }} className="h-8 w-8" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+
+      <DropdownMenuContent
+        align="end"
+        className={
+          user.role === "MANAGER"
+            ? "border border-dashed border-orange-500"
+            : ""
+        }
+      >
+        <Badge
+          variant="outline"
+          className={
+            user.role === "MANAGER" ? "inline bg-orange-500 w-fit text-xs" : ""
+          }
+        >
+          {user.role}
+        </Badge>
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
             {user.name && <p className="font-medium">{user.name}</p>}
