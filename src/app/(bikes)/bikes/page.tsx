@@ -71,7 +71,8 @@ export default async function BikesPage({
                   "mb-8 mt-2 text-center text-sm font-normal leading-6 text-muted-foreground",
                 )}
               >
-                You don&apos;t have any bikes yet. Start creating content.
+                You don&apos;t have any bikes yet. Start adding bikes to your
+                shop.
               </p>
             </div>
           )}
