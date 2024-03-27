@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/user-avatar";
 import { dashboardConfig } from "@/config/dashboard";
+import { cn } from "@/lib/utils";
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
   user: User;
@@ -34,14 +35,6 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
             : ""
         }
       >
-        <Badge
-          variant="outline"
-          className={
-            user.role === "MANAGER" ? "inline bg-orange-500 w-fit text-xs" : ""
-          }
-        >
-          {user.role}
-        </Badge>
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
             {user.name && <p className="font-medium">{user.name}</p>}
@@ -50,6 +43,15 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
                 {user.email}
               </p>
             )}
+            <Badge
+              variant="default"
+              className={cn(
+                "flex justify-center items-center rounded-md text-xs w-full flex-shrink-0 py-1 pointer-events-none",
+                user.role === "MANAGER" ? "bg-orange-500" : "",
+              )}
+            >
+              {user.role}
+            </Badge>
           </div>
         </div>
         <DropdownMenuSeparator />
