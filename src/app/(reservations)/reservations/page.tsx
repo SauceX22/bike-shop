@@ -137,15 +137,18 @@ export default async function ReservationsPage() {
               </div>
             </div>
             <h2 className={cn("mt-6 text-xl font-semibold")}>
-              You don&apos;t have any reservations
+              {isManager
+                ? "No Reservations"
+                : "You don&apos;t have any reservations"}
             </h2>
             <p
               className={cn(
                 "mb-8 mt-2 text-center text-sm font-normal leading-6 text-muted-foreground",
               )}
             >
-              You don&apos;t have any reservations yet. Rent a bike to get
-              started.
+              {isManager
+                ? "No reservations made by users yet."
+                : "You don&apos;t have any reservations yet. Rent a bike to get started."}
             </p>
           </div>
         )}

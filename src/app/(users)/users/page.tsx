@@ -46,7 +46,7 @@ export default async function UsersPage() {
                 "mb-8 mt-2 text-center text-sm font-normal leading-6 text-muted-foreground",
               )}
             >
-              You don&apos;t have any users yet. Start creating content.
+              You don&apos;t have any users yet. Start advertising your shop
             </p>
             {/* <UserCreateButton variant="outline" /> */}
           </div>
