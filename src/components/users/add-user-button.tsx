@@ -200,7 +200,7 @@ export default function AddUserButton() {
               name="enabled"
               render={({ field }) => (
                 <FormItem className="w-full gap-2 flex flex-col row-span-2 justify-start">
-                  <FormLabel htmlFor="enabled">Enabled for Rent</FormLabel>
+                  <FormLabel htmlFor="enabled">Enabled for Access</FormLabel>
                   <FormControl id="enabled">
                     <Switch
                       checked={field.value}
