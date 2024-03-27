@@ -23,6 +23,7 @@ export default async function LoginPage() {
   return (
     <div className="container flex h-screen w-screen flex-col items-center justify-center">
       <Link
+        prefetch
         href="/"
         className={cn(
           buttonVariants({ variant: "ghost" }),
@@ -46,7 +47,7 @@ export default async function LoginPage() {
         </div>
         <UserLoginForm />
         <p className="px-8 text-center text-sm text-muted-foreground">
-          <Link
+          <Link prefetch
             href="/auth/register"
             className="hover:text-brand underline underline-offset-4"
           >

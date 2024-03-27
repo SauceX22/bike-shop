@@ -1,16 +1,21 @@
 import { BikeItem } from "@/components/bike-item";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardShell } from "@/components/dashboard/shell";
-import Link from "next/link";
+import { getServerAuthSession } from "@/server/auth";
 
-export default function DashboardLoading() {
+export default async function DashboardLoading() {
+  const session = await getServerAuthSession();
+  const isManager = session?.user?.role === "MANAGER";
   return (
     <DashboardShell>
-      <DashboardHeader heading="Bikes" text="Create and manage bikes.">
-        <Link prefetch href="/bikes/create">
-          Create bike
-        </Link>
-      </DashboardHeader>
+      <DashboardHeader
+        heading="Reservations"
+        text={
+          isManager
+            ? "Manage reservations made by your users."
+            : "Manager your reservations."
+        }
+      />
       <div className="divide-border-200 divide-y rounded-md border">
         <BikeItem.Skeleton />
         <BikeItem.Skeleton />

@@ -146,9 +146,9 @@ export function UserRegisterForm({
           <span className="bg-background px-2 text-muted-foreground">
             Already have an account?{" "}
             <Link
+              prefetch
               className="hover:text-brand underline underline-offset-4"
               href="/auth/login"
-              prefetch
             >
               Login
             </Link>

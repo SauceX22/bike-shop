@@ -37,7 +37,7 @@ export default async function HomePage({
   return (
     <DashboardShell>
       <DashboardHeader heading="Home" text="Bikes available for rent.">
-        <Link href="/reservations" className={cn(buttonVariants())}>
+        <Link prefetch href="/reservations" className={cn(buttonVariants())}>
           {isManager ? "Manage User Reservations" : "View Your Reservations"}
         </Link>
       </DashboardHeader>

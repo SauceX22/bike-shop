@@ -22,6 +22,7 @@ export default async function RegisterPage() {
   return (
     <div className="container grid h-screen w-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
       <Link
+        prefetch
         href="/auth/login"
         className={cn(
           buttonVariants({ variant: "ghost" }),
@@ -46,6 +47,7 @@ export default async function RegisterPage() {
           <p className="px-8 text-center text-sm text-muted-foreground">
             By clicking continue, you agree to our{" "}
             <Link
+              prefetch
               href="/terms"
               className="hover:text-brand underline underline-offset-4"
             >
@@ -53,6 +55,7 @@ export default async function RegisterPage() {
             </Link>{" "}
             and{" "}
             <Link
+              prefetch
               href="/privacy"
               className="hover:text-brand underline underline-offset-4"
             >
