@@ -1,4 +1,4 @@
-# React Bike Rentals 🚲
+# React Bike Rentals 🏍️
 
 ## Overview
 
