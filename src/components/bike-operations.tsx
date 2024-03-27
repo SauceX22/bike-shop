@@ -58,7 +58,11 @@ export function BikeOperations({ bike }: BikeOperationsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem>
-            <Link href={`/bike/${bike.id}/edit`} className="flex w-full">
+            <Link
+              prefetch
+              href={`/bike/${bike.id}/edit`}
+              className="flex w-full"
+            >
               Edit
             </Link>
           </DropdownMenuItem>

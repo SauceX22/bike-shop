@@ -21,7 +21,7 @@ export function MainNav({ items, children }: MainNavProps) {
 
   return (
     <div className="flex gap-6 md:gap-10">
-      <Link href="/" className="hidden items-center space-x-2 md:flex">
+      <Link prefetch href="/" className="hidden items-center space-x-2 md:flex">
         <Icons.logo />
         <span className="hidden font-bold sm:inline-block">
           {siteConfig.name}
@@ -31,6 +31,7 @@ export function MainNav({ items, children }: MainNavProps) {
         <nav className="hidden gap-6 md:flex">
           {items?.map((item, index) => (
             <Link
+              prefetch
               key={index}
               href={item.disabled ? "#" : item.href}
               className={cn(

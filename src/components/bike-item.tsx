@@ -51,6 +51,7 @@ export async function BikeItem({ bike }: BikeItemProps) {
         {isManager ? (
           <div className="flex flex-col gap-4 w-full">
             <Link
+              prefetch
               href={`/bikes/${bike.id}`}
               className={cn(
                 buttonVariants({
@@ -64,6 +65,7 @@ export async function BikeItem({ bike }: BikeItemProps) {
           </div>
         ) : (
           <Link
+            prefetch
             href={`/bikes/${bike.id}`}
             className={cn(buttonVariants(), "w-full")}
           >

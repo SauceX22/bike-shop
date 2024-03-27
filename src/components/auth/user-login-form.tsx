@@ -138,9 +138,9 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
           <span className="bg-background px-2 text-muted-foreground">
             No account?{" "}
             <Link
+              prefetch
               className="hover:text-brand underline underline-offset-4"
               href="/auth/register"
-              prefetch
             >
               Register
             </Link>
