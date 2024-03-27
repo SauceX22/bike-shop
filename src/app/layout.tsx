@@ -17,7 +17,7 @@ const inter = Inter({
 export const metadata = {
   title: "Bike Rental Shop",
   description: "Rent a bike today!",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/tabicon.svg" }],
 };
 
 export default function RootLayout({
