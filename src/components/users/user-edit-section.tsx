@@ -22,11 +22,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { revalidatePathCache } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/client";
 import { type User } from "@prisma/client";
-import { revalidatePath } from "next/cache";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -36,6 +36,7 @@ type Props = {
 
 const UserEditSection = ({ user, className }: Props) => {
   const apiUtils = api.useUtils();
+  const path = usePathname();
   const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showDisableDialog, setShowDisableDialog] = useState(false);
@@ -54,7 +55,8 @@ const UserEditSection = ({ user, className }: Props) => {
         });
 
         await apiUtils.user.invalidate();
-        router.refresh();
+        await revalidatePathCache(path);
+        await revalidatePathCache("/users");
       },
     });
 
@@ -71,7 +73,8 @@ const UserEditSection = ({ user, className }: Props) => {
         });
 
         await apiUtils.user.invalidate();
-        router.refresh();
+        await revalidatePathCache(path);
+        await revalidatePathCache("/users");
       },
     });
 
@@ -87,7 +90,7 @@ const UserEditSection = ({ user, className }: Props) => {
       });
 
       await apiUtils.user.invalidate();
-      revalidatePath("/users");
+      await revalidatePathCache("/users");
       router.push("/users");
     },
   });
